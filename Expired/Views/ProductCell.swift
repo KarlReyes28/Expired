@@ -13,42 +13,36 @@ struct ProductCell: View {
 
     var body: some View {
         HStack {
-            Rectangle()
-                .frame(width: 4, height: 60)
-                .foregroundColor(product.statusColor())
             VStack(alignment: .leading) {
                 Text(product.title ?? "")
-                    .font(.headline)
-                Text("\(product.expiryDate ?? Date(), formatter: productFormatter)")
-                    .font(.subheadline)
-                    .padding(.top, 0.5)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .padding(.bottom, 2)
+                HStack {
+                    Image(systemName: product.isExpired() ? "hourglass.bottomhalf.fill" : "hourglass.tophalf.fill")
+                        .foregroundColor(product.statusColor())
+                    Text("\(product.relativeExpiryDate())")
+                        .font(.subheadline)
+                }
             }
             if let memo = product.memo {
                 if !memo.isEmpty {
                     Spacer()
                     HStack {
-                        Button {
-                            productStore.showingMemoPopover = true
-                            productStore.popoverProduct = product
-                        } label: {
-                            Image(systemName: "info.circle")
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        .font(.title)
-                        .foregroundColor(.gray)
+                        Image(systemName: "info.circle")
+                            .font(.title2)
+                            .foregroundColor(.accentColor)
+                            .onTapGesture {
+                                productStore.showingMemoPopover = true
+                                productStore.popoverProduct = product
+                            }
+                            .accessibilityLabel("Show Memo")
                     }
                 }
             }
         }
     }
 }
-
-private let productFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .medium
-    formatter.timeStyle = .short
-    return formatter
-}()
 
 struct ProductCell_Previews: PreviewProvider {
     static var previews: some View {

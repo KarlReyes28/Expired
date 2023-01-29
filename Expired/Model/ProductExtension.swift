@@ -46,9 +46,15 @@ extension Product {
         case .Expired:
             return .red
         case .ExpiringSoon:
-            return .orange
+            return .yellow
         case .Good:
             return .green
         }
+    }
+    
+    func relativeExpiryDate() -> String {
+        guard let expiryDate = expiryDate else { return "" }
+        let formatter = RelativeDateTimeFormatter()
+        return formatter.localizedString(for: expiryDate, relativeTo: Date())
     }
 }

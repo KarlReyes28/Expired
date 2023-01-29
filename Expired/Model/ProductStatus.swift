@@ -9,10 +9,10 @@ import SwiftUI
 
 enum ProductStatus: String {
     static var allStatus: [ProductStatus] {
-        return [.Good,.ExpiringSoon,.Expired]
+        return [.Expired, .ExpiringSoon, .Good]
     }
     
-    case Good = "Good"
-    case ExpiringSoon = "Expiring Soon"
     case Expired = "Expired"
+    case ExpiringSoon = "Expiring Soon"
+    case Good = "Good"
 }

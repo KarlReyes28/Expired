@@ -38,19 +38,27 @@ struct ProductEditView: View {
         List {
             Section(header: Text("Product")) {
                 HStack {
-                    Text("*").font(.subheadline).foregroundColor(.red)
                     Text("Title")
-                    TextField("Title", text: $title)
+                    Text("*")
+                        .padding(.horizontal, 0)
+                        .font(.headline)
+                        .foregroundColor(.red)
+                    TextField("Product Title", text: $title)
+                        .multilineTextAlignment(.trailing)
                 }
                 HStack {
                     Text("Memo")
-                    TextField("Memo", text: $memo)
+                    TextField("Product Memo", text: $memo)
+                        .multilineTextAlignment(.trailing)
                 }
             }
             
             Section(header: Text("Expiry Date"), footer: HStack {
                 Text("Fields with")
-                Text("*").font(.headline).foregroundColor(.red)
+                Text("*")
+                    .padding(.horizontal, 0)
+                    .font(.headline)
+                    .foregroundColor(.red)
                 Text("are mandatory")
             }) {
                 HStack {

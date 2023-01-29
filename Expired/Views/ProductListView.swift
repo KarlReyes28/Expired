@@ -23,7 +23,7 @@ struct ProductListView: View {
                     }
                     .listStyle(GroupedListStyle())
                 } else {
-                    Text("No product found\nClick + to add your first product!")
+                    Text("No product found\nPress + to add your first product!")
                         .font(.subheadline)
                         .multilineTextAlignment(.center)
                         .padding()
@@ -36,20 +36,21 @@ struct ProductListView: View {
                         ProductEditView(product: nil)
                             .environmentObject(productStore)
                     } label: {
-                        Image(systemName: "plus.circle")
+                        Image(systemName: "plus")
+                            .font(.title2)
                     }
                 }
             }
             .popover(isPresented: $productStore.showingMemoPopover) {
                 VStack {
+                    Spacer()
                     Text(productStore.popoverProduct?.title ?? "")
                         .font(.title2)
-                        .fontWeight(.bold)
-                    VStack {
-                        Text(productStore.popoverProduct?.memo ?? "")
-                            .font(.subheadline)
-                            .padding(.top, 6)
-                    }
+                        .fontWeight(.semibold)
+                    Text(productStore.popoverProduct?.memo ?? "")
+                        .font(.subheadline)
+                        .padding(.top, 2)
+                    Spacer()
                 }
             }
         }
