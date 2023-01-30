@@ -44,9 +44,9 @@ extension Product {
     func statusColor() -> Color {
         switch status() {
         case .Expired:
-            return .red
+            return .pink
         case .ExpiringSoon:
-            return .yellow
+            return .orange
         case .Good:
             return .green
         }

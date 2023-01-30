@@ -15,9 +15,11 @@ struct ExpiredApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ProductListView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
-                .environmentObject(ProductStore(persistenceController.container.viewContext))
+            NavigationView {
+                ProductListView()
+                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                    .environmentObject(ProductStore(persistenceController.container.viewContext))
+            }
         }
     }
 }

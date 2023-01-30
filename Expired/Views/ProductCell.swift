@@ -15,28 +15,24 @@ struct ProductCell: View {
         HStack {
             VStack(alignment: .leading) {
                 Text(product.title ?? "")
-                    .font(.title3)
-                    .fontWeight(.semibold)
+                    .font(.headline)
                     .padding(.bottom, 2)
                 HStack {
                     Image(systemName: product.isExpired() ? "hourglass.bottomhalf.fill" : "hourglass.tophalf.fill")
-                        .foregroundColor(product.statusColor())
                     Text("\(product.relativeExpiryDate())")
-                        .font(.subheadline)
                 }
+                .font(.caption)
+                .foregroundColor(product.statusColor())
             }
             if let memo = product.memo {
                 if !memo.isEmpty {
                     Spacer()
                     HStack {
                         Image(systemName: "info.circle")
-                            .font(.title2)
-                            .foregroundColor(.accentColor)
                             .onTapGesture {
                                 productStore.showingMemoPopover = true
                                 productStore.popoverProduct = product
                             }
-                            .accessibilityLabel("Show Memo")
                     }
                 }
             }

@@ -19,7 +19,6 @@ struct ProductEditView: View {
     @State private var title: String
     @State private var memo: String
     @State private var expiryDate: Date
-    @State private var hasFormError = false
     
     init(product: Product?) {
         if let selectedProduct = product {
@@ -36,31 +35,16 @@ struct ProductEditView: View {
 
     var body: some View {
         List {
-            Section(header: Text("Product")) {
+            Section(header: Text("Product Info")) {
                 HStack {
-                    Text("Title")
-                    Text("*")
-                        .padding(.horizontal, 0)
-                        .font(.headline)
-                        .foregroundColor(.red)
-                    TextField("Product Title", text: $title)
-                        .multilineTextAlignment(.trailing)
+                    TextField("Title", text: $title)
                 }
                 HStack {
-                    Text("Memo")
-                    TextField("Product Memo", text: $memo)
-                        .multilineTextAlignment(.trailing)
+                    TextField("Memo", text: $memo)
                 }
             }
             
-            Section(header: Text("Expiry Date"), footer: HStack {
-                Text("Fields with")
-                Text("*")
-                    .padding(.horizontal, 0)
-                    .font(.headline)
-                    .foregroundColor(.red)
-                Text("are mandatory")
-            }) {
+            Section(header: Text("Expiry Date")) {
                 HStack {
                     DatePicker("Expiries At", selection: $expiryDate, displayedComponents: [.date, .hourAndMinute])
                 }
@@ -75,26 +59,23 @@ struct ProductEditView: View {
                 } label: {
                     Text("Save")
                 }
+                .disabled(title.isEmpty)
             }
-        }
-        .alert(isPresented: $hasFormError) {
-            Alert(title: Text("Input Error"), message: Text("Title can not be empty"), dismissButton: .default(Text("OK")))
         }
     }
     
     private func navTitle() -> String {
-        return selectedProduct == nil ? "Add Product" : "Edit Product"
+        return selectedProduct?.title ?? "Add Product"
     }
     
     private func save() {
-        hasFormError = title.isEmpty
-        guard !hasFormError else { return }
-        
         withAnimation {
+            // To be optimized
             if selectedProduct == nil {
                 selectedProduct = Product(context: viewContext)
                 selectedProduct?.id = UUID()
                 selectedProduct?.category = nil
+                selectedProduct?.image = nil
                 selectedProduct?.archived = false
                 selectedProduct?.createdAt = Date()
             }
@@ -112,6 +93,8 @@ struct ProductEditView: View {
 
 struct ProductEditView_Previews: PreviewProvider {
     static var previews: some View {
-        ProductEditView(product: nil)
+        NavigationView {
+            ProductEditView(product: nil)
+        }
     }
 }

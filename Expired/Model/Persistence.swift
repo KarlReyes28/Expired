@@ -13,7 +13,7 @@ struct PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        let productTitles = ["Milk", "Banana", "Beef", "Pork", "Cake", "Egg", "Beer", "Cat Food"]
+        let productTitles = ["Milk: Natual or Fair Life...I don't remember. It doesn't matter.", "Banana", "Beef", "Pork", "Cake", "Egg", "Beer", "Cat Food"]
         
         // Data for preview
         for index in 0..<productTitles.count {
@@ -21,9 +21,10 @@ struct PersistenceController {
             product.id = UUID()
             product.title = productTitles[index]
             product.expiryDate = Date(timeIntervalSinceNow: 86400 * Double.random(in: -3...6))
-            product.memo = Int.random(in: -1...1) > 0 ? "Memo of \(productTitles[index])" : nil
+            product.memo = Int.random(in: -1...1) > 0 ? "Memo of \(productTitles[index]), I am trying to make the memo long to test the alignment." : nil
             product.archived = false
             product.category = nil
+            product.image = nil
             product.createdAt = Date()
             product.updatedAt = Date()
         }
