@@ -24,16 +24,14 @@ struct ProductCell: View {
                 .font(.caption)
                 .foregroundColor(product.statusColor)
             }
+            Spacer()
             if let memo = product.memo {
                 if !memo.isEmpty {
-                    Spacer()
-                    HStack {
-                        Image(systemName: "info.circle")
-                            .onTapGesture {
-                                productStore.showingMemoPopover = true
-                                productStore.popoverProduct = product
-                            }
-                    }
+                    Image(systemName: "info.circle")
+                        .onTapGesture {
+                            productStore.showingMemoPopover = true
+                            productStore.popoverProduct = product
+                        }
                 }
             }
         }
@@ -42,6 +40,10 @@ struct ProductCell: View {
 
 struct ProductCell_Previews: PreviewProvider {
     static var previews: some View {
-        ProductCell(product: Product())
+        List {
+            ProductCell(product: ProductStore(PersistenceController.preview.container.viewContext).products[0])
+                .listRowBackground(Color.cyan)
+        }
+        .listStyle(GroupedListStyle())
     }
 }

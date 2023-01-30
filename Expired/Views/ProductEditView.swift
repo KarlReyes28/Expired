@@ -93,8 +93,6 @@ struct ProductEditView: View {
 
 struct ProductEditView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            ProductEditView(product: nil)
-        }
+        ProductEditView(product: ProductStore(PersistenceController.preview.container.viewContext).products[0])
     }
 }
