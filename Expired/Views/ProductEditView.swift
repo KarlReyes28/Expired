@@ -14,12 +14,12 @@ struct ProductEditView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var productStore: ProductStore
-    
+
     @State private var selectedProduct: Product?
     @State private var title: String
     @State private var memo: String
     @State private var expiryDate: Date
-    
+
     init(product: Product?) {
         if let selectedProduct = product {
             _selectedProduct = State(initialValue: selectedProduct)
@@ -51,7 +51,7 @@ struct ProductEditView: View {
             }
         }
         .listStyle(GroupedListStyle())
-        .navigationBarTitle(navTitle())
+        .navigationBarTitle(navTitle)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
@@ -64,7 +64,7 @@ struct ProductEditView: View {
         }
     }
     
-    private func navTitle() -> String {
+    private var navTitle: String {
         return selectedProduct?.title ?? "Add Product"
     }
     

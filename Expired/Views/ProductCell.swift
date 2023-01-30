@@ -18,11 +18,11 @@ struct ProductCell: View {
                     .font(.headline)
                     .padding(.bottom, 2)
                 HStack {
-                    Image(systemName: product.isExpired() ? "hourglass.bottomhalf.fill" : "hourglass.tophalf.fill")
-                    Text("\(product.relativeExpiryDate())")
+                    Image(systemName: product.isExpired ? "hourglass.bottomhalf.fill" : "hourglass.tophalf.fill")
+                    Text("\(product.relativeExpiryDate)")
                 }
                 .font(.caption)
-                .foregroundColor(product.statusColor())
+                .foregroundColor(product.statusColor)
             }
             if let memo = product.memo {
                 if !memo.isEmpty {

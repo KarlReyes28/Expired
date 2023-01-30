@@ -13,54 +13,55 @@ struct ProductListView: View {
     @EnvironmentObject var productStore: ProductStore
 
     var body: some View {
-        HStack {
-            if filteredProducts.count > 0 {
-                List {
-                    ForEach(filteredProducts) { product in
-                        ProductCell(product: product)
+        NavigationView {
+            HStack {
+                if filteredProducts.count > 0 {
+                    List {
+                        ForEach(filteredProducts) { product in
+                            ProductCell(product: product)
+                                .environmentObject(productStore)
+                        }
                     }
-                }
-                .listStyle(GroupedListStyle())
-            } else {
-                Text("No product found\nPress + to add your first product!")
-                    .font(.subheadline)
-                    .multilineTextAlignment(.center)
-                    .padding()
-            }
-        }
-        .navigationBarTitle("Products")
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink {
-                    ProductEditView(product: nil)
-                } label: {
-                    Image(systemName: "plus")
+                    .listStyle(GroupedListStyle())
+                } else {
+                    Text("No product found\nPress + to add your first product!")
+                        .font(.subheadline)
+                        .multilineTextAlignment(.center)
+                        .padding()
                 }
             }
-        }
-        .popover(isPresented: $productStore.showingMemoPopover) {
-            VStack {
-                Spacer()
-                Text(productStore.popoverProduct?.title ?? "")
-                    .font(.title)
-                Text(productStore.popoverProduct?.memo ?? "")
-                    .padding(.top, 2)
-                Spacer()
+            .navigationBarTitle("Products")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: ProductEditView(product: nil)
+                        .environmentObject(productStore)) {
+                            Image(systemName: "plus")
+                        }
+                }
             }
-            .padding()
+            .popover(isPresented: $productStore.showingMemoPopover) {
+                VStack {
+                    Spacer()
+                    Text(productStore.popoverProduct?.title ?? "")
+                        .font(.title)
+                    Text(productStore.popoverProduct?.memo ?? "")
+                        .padding(.top, 2)
+                    Spacer()
+                }
+                .padding()
+            }
         }
     }
 
-    var filteredProducts: [Product] {
+    private var filteredProducts: [Product] {
         return productStore.products
     }
 }
 
 struct ProductListView_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            ProductListView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-                .environmentObject(ProductStore(PersistenceController.preview.container.viewContext))
-        }
+        ProductListView()
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+            .environmentObject(ProductStore(PersistenceController.preview.container.viewContext))
     }
 }

@@ -9,40 +9,40 @@ import SwiftUI
 
 extension Product {
     
-    func isExpired() -> Bool {
-        if let expiryDate = expiryDate {
-            return Date() > expiryDate
+    var isExpired: Bool {
+        if let date = expiryDate {
+            return date < Date()
         }
         
         return false
     }
     
-    func isExpiringSoon() -> Bool {
+    var isExpiringSoon: Bool {
         let now = Date()
-        let twoDaysLater = Calendar.current.date(byAdding: .day, value: 3, to: now)!
-        if let expiryDate = expiryDate {
-            return twoDaysLater > expiryDate && !isExpired()
+        let twoDaysLater = Calendar.current.date(byAdding: .day, value: 2, to: now)!
+        if let date = expiryDate {
+            return !isExpired && date < twoDaysLater
         }
         
         return false
     }
     
-    func isGood() -> Bool {
-        return !(isExpired() || isExpiringSoon())
+    var isGood: Bool {
+        return !(isExpired || isExpiringSoon)
     }
     
-    func status() -> ProductStatus {
-        if isExpired() {
+    var status: ProductStatus {
+        if isExpired {
             return .Expired
-        } else if isExpiringSoon() {
+        } else if isExpiringSoon {
             return .ExpiringSoon
         } else {
             return .Good
         }
     }
     
-    func statusColor() -> Color {
-        switch status() {
+    var statusColor: Color {
+        switch status {
         case .Expired:
             return .pink
         case .ExpiringSoon:
@@ -52,9 +52,9 @@ extension Product {
         }
     }
     
-    func relativeExpiryDate() -> String {
-        guard let expiryDate = expiryDate else { return "" }
+    var relativeExpiryDate: String {
+        guard let date = expiryDate else { return "" }
         let formatter = RelativeDateTimeFormatter()
-        return formatter.localizedString(for: expiryDate, relativeTo: Date())
+        return formatter.localizedString(for: date, relativeTo: Date())
     }
 }
