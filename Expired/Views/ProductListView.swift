@@ -33,16 +33,16 @@ struct ProductListView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: ProductEditView(product: nil)) {
-                            Image(systemName: "plus")
-                        }
+                        Image(systemName: "plus")
+                    }
                 }
             }
             .popover(isPresented: $productStore.showingMemoPopover) {
                 VStack {
                     Spacer()
-                    Text(productStore.popoverProduct?.title ?? "")
+                    Text(productStore.selectedProduct?.title ?? "")
                         .font(.title)
-                    Text(productStore.popoverProduct?.memo ?? "")
+                    Text(productStore.selectedProduct?.memo ?? "")
                         .padding(.top, 2)
                     Spacer()
                 }

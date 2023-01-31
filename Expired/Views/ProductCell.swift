@@ -27,10 +27,9 @@ struct ProductCell: View {
             Spacer()
             if let memo = product.memo {
                 if !memo.isEmpty {
-                    Image(systemName: "info.circle")
+                    Image(systemName: "note.text")
                         .onTapGesture {
-                            productStore.showingMemoPopover = true
-                            productStore.popoverProduct = product
+                            productStore.selectedProduct = product
                         }
                 }
             }

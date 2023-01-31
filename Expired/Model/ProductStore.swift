@@ -10,8 +10,22 @@ import CoreData
 
 class ProductStore: ObservableObject {
     @Published var products: [Product] = []
-    @Published var popoverProduct: Product?
-    @Published var showingMemoPopover = false
+    @Published var selectedProduct: Product? {
+        didSet {
+            // show memo popover when a product is selected by tapping the "memo icon"
+            if (selectedProduct != nil) {
+                showingMemoPopover = true
+            }
+        }
+    }
+    @Published var showingMemoPopover = false {
+        didSet {
+            // set selectedProduct to nil whenever popover is dismissed
+            if (!showingMemoPopover) {
+                selectedProduct = nil
+            }
+        }
+    }
     
     init(_ context: NSManagedObjectContext) {
         reloadProducts(context)
