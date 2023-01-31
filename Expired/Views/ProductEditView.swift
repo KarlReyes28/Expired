@@ -37,15 +37,18 @@ struct ProductEditView: View {
         List {
             Section(header: Text("Product Info")) {
                 HStack {
+                    Image(systemName: "pencil")
                     TextField("Title", text: $title)
                 }
                 HStack {
+                    Image(systemName: "note.text")
                     TextField("Memo", text: $memo)
                 }
             }
             
             Section(header: Text("Expiry Date")) {
                 HStack {
+                    Image(systemName: "hourglass.bottomhalf.fill")
                     DatePicker("Expiries At", selection: $expiryDate, displayedComponents: [.date, .hourAndMinute])
                 }
             }
