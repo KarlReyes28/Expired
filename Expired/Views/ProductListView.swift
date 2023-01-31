@@ -19,7 +19,6 @@ struct ProductListView: View {
                     List {
                         ForEach(filteredProducts) { product in
                             ProductCell(product: product)
-                                .environmentObject(productStore)
                         }
                     }
                     .listStyle(GroupedListStyle())
@@ -33,8 +32,7 @@ struct ProductListView: View {
             .navigationBarTitle("Products")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink(destination: ProductEditView(product: nil)
-                        .environmentObject(productStore)) {
+                    NavigationLink(destination: ProductEditView(product: nil)) {
                             Image(systemName: "plus")
                         }
                 }
