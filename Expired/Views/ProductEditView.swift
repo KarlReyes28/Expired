@@ -48,7 +48,7 @@ struct ProductEditView: View {
             
             Section(header: Text("Expiry Date")) {
                 HStack {
-                    Image(systemName: "hourglass.bottomhalf.fill")
+                    Image(systemName: "hourglass.tophalf.fill")
                     DatePicker("Expiries At", selection: $expiryDate, displayedComponents: [.date, .hourAndMinute])
                 }
             }
