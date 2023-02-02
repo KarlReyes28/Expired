@@ -12,22 +12,32 @@ struct ProductListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var productStore: ProductStore
 
+    @State private var selectedFilter: ProductFilter = .All
     var body: some View {
         NavigationView {
-            HStack {
-                if filteredProducts.count > 0 {
-                    List {
-                        ForEach(filteredProducts) { product in
-                            ProductCell(product: product)
+            VStack (spacing: 0) {
+                HStack{
+                    Text("Filter by status: ")
+                    Spacer()
+                    Picker(selection: $selectedFilter, label: Text("Select a filter")) {
+                        ForEach(ProductFilter.allCases) { status in
+                            Text(status.rawValue).tag(status)
                         }
                     }
-                    .listStyle(GroupedListStyle())
-                } else {
-                    Text("No product found\nPress + to add your first product!")
-                        .font(.subheadline)
-                        .multilineTextAlignment(.center)
-                        .padding()
                 }
+                .padding(.all, 15.0)
+                List(filteredProducts, id: \.self) { product in
+                    ProductCell(product: product)
+                }
+                .listStyle(PlainListStyle())
+                .overlay(Group {
+                    if filteredProducts.isEmpty {
+                       Text("No product found\nPress + to add your first product!")
+                           .font(.subheadline)
+                            .multilineTextAlignment(.center)
+                           .padding()
+                   }
+                })
             }
             .navigationBarTitle("Products")
             .toolbar {
@@ -51,8 +61,19 @@ struct ProductListView: View {
         }
     }
 
-    private var filteredProducts: [Product] {
-        return productStore.products
+    private  var filteredProducts: [Product] {
+        return productStore.products.filter { product in
+            switch selectedFilter {
+            case .All:
+                return true
+            case .Expired:
+                return product.isExpired
+            case .ExpiringSoon:
+                return product.isExpiringSoon
+            case .Good:
+                return product.isGood
+            }
+        }
     }
 }
 
