@@ -52,7 +52,7 @@ extension Product {
         }
     }
     
-    func extractedFunc(_ product: Product, selectedFilter: ProductFilter) -> Bool {
+    func filterListView(product: Product, selectedFilter: ProductFilter) -> Bool {
         switch selectedFilter {
         case .All:
             return true

@@ -63,7 +63,7 @@ struct ProductListView: View {
 
     var filteredProducts: [Product] {
         return productStore.products.filter { product in
-            return Product().extractedFunc(product, selectedFilter: selectedFilter)
+            return Product().filterListView(product: product, selectedFilter: selectedFilter)
         }
     }
 }
