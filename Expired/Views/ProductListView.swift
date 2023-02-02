@@ -61,18 +61,9 @@ struct ProductListView: View {
         }
     }
 
-    private  var filteredProducts: [Product] {
+    var filteredProducts: [Product] {
         return productStore.products.filter { product in
-            switch selectedFilter {
-            case .All:
-                return true
-            case .Expired:
-                return product.isExpired
-            case .ExpiringSoon:
-                return product.isExpiringSoon
-            case .Good:
-                return product.isGood
-            }
+            return Product().extractedFunc(product, selectedFilter: selectedFilter)
         }
     }
 }

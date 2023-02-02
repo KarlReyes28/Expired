@@ -52,6 +52,19 @@ extension Product {
         }
     }
     
+    func extractedFunc(_ product: Product, selectedFilter: ProductFilter) -> Bool {
+        switch selectedFilter {
+        case .All:
+            return true
+        case .Expired:
+            return product.isExpired
+        case .ExpiringSoon:
+            return product.isExpiringSoon
+        case .Good:
+            return product.isGood
+        }
+    }
+    
     var relativeExpiryDate: String {
         guard let date = expiryDate else { return "" }
         let formatter = RelativeDateTimeFormatter()
