@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		66AF6493298C260F00456759 /* ProductFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66AF6492298C260F00456759 /* ProductFilter.swift */; };
 		DD9C7F6D29837A1F00E672B2 /* ExpiredApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9C7F6C29837A1F00E672B2 /* ExpiredApp.swift */; };
 		DD9C7F7129837A2000E672B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD9C7F7029837A2000E672B2 /* Assets.xcassets */; };
 		DD9C7F7429837A2000E672B2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD9C7F7329837A2000E672B2 /* Preview Assets.xcassets */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		66AF6492298C260F00456759 /* ProductFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFilter.swift; sourceTree = "<group>"; };
 		DD9C7F6929837A1F00E672B2 /* Expired.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Expired.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD9C7F6C29837A1F00E672B2 /* ExpiredApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpiredApp.swift; sourceTree = "<group>"; };
 		DD9C7F7029837A2000E672B2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -100,6 +102,7 @@
 				DD9C7F8229837A8400E672B2 /* ProductExtension.swift */,
 				DD9C7F8429837A8400E672B2 /* ProductStatus.swift */,
 				DD9C7F8329837A8400E672B2 /* ProductStore.swift */,
+				66AF6492298C260F00456759 /* ProductFilter.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -175,6 +178,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DD9C7F8E29837A9F00E672B2 /* ProductCell.swift in Sources */,
+				66AF6493298C260F00456759 /* ProductFilter.swift in Sources */,
 				DD9C7F7929837A2000E672B2 /* Expired.xcdatamodeld in Sources */,
 				DD9C7F8C29837A9F00E672B2 /* ProductEditView.swift in Sources */,
 				DD9C7F8D29837A9F00E672B2 /* ProductListView.swift in Sources */,
