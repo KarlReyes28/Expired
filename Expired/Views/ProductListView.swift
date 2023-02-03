@@ -18,8 +18,14 @@ struct ProductListView: View {
                 if filteredProducts.count > 0 {
                     List {
                         ForEach(filteredProducts) { product in
-                            ProductCell(product: product)
-                        }
+                            NavigationLink {
+                                ProductEditView(product: product)
+                                    .environmentObject(productStore)
+                                }label:{
+                                    ProductCell(product: product)
+                                    .environmentObject(productStore)
+                                }
+                            }
                     }
                     .listStyle(GroupedListStyle())
                 } else {
