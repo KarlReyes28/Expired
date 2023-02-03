@@ -11,34 +11,29 @@ import CoreData
 struct ProductListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var productStore: ProductStore
-
     @State private var selectedFilter: ProductFilter = .All
+
     var body: some View {
         NavigationView {
-            VStack (spacing: 0) {
-                HStack{
-                    Text("Filter by status: ")
-                    Spacer()
-                    Picker(selection: $selectedFilter, label: Text("Select a filter")) {
-                        ForEach(ProductFilter.allCases) { status in
-                            Text(status.rawValue).tag(status)
-                        }
+            List {
+                Picker(selection: $selectedFilter, label: Text("Filter by status")) {
+                    ForEach(ProductFilter.allCases) { status in
+                        Text(status.rawValue).tag(status)
                     }
                 }
-                .padding(.all, 15.0)
-                List(filteredProducts, id: \.self) { product in
+                ForEach(filteredProducts) { product in
                     ProductCell(product: product)
                 }
-                .listStyle(PlainListStyle())
-                .overlay(Group {
-                    if filteredProducts.isEmpty {
-                       Text("No product found\nPress + to add your first product!")
-                           .font(.subheadline)
-                            .multilineTextAlignment(.center)
-                           .padding()
-                   }
-                })
             }
+            .listStyle(GroupedListStyle())
+            .overlay(Group {
+                if filteredProducts.isEmpty {
+                    Text("No product found\nPress + to add your first product!")
+                        .font(.subheadline)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                }
+            })
             .navigationBarTitle("Products")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -61,9 +56,25 @@ struct ProductListView: View {
         }
     }
 
-    var filteredProducts: [Product] {
-        return productStore.products.filter { product in
-            return Product().filterListView(product: product, selectedFilter: selectedFilter)
+    private var filteredProducts: [Product] {
+        switch selectedFilter {
+            case .All:
+                return productStore.products
+            case .Expired, .ExpiringSoon, .Good:
+                return productStore.products.filter{ filterProduct($0, selectedFilter) }
+        }
+    }
+    
+    private func filterProduct(_ product: Product, _ selectedFilter: ProductFilter) -> Bool {
+        switch selectedFilter {
+            case .All:
+                return true
+            case .Expired:
+                return product.isExpired
+            case .ExpiringSoon:
+                return product.isExpiringSoon
+            case .Good:
+                return product.isGood
         }
     }
 }
