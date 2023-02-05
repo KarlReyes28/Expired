@@ -22,7 +22,11 @@ struct ProductListView: View {
                     }
                 }
                 ForEach(filteredProducts) { product in
-                    ProductCell(product: product)
+                  NavigationLink {
+                      ProductEditView(product: product)
+                  } label: {
+                      ProductCell(product: product)
+                  }
                 }
             }
             .listStyle(GroupedListStyle())
