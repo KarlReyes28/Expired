@@ -20,11 +20,8 @@ struct ProductListView: View {
                         ForEach(filteredProducts) { product in
                             NavigationLink {
                                 ProductEditView(product: product)
-                                    .environmentObject(productStore)
-                                }label:{
-                                    ProductCell(product: product)
-                                    .environmentObject(productStore)
-                                }
+                            } label: {
+                                ProductCell(product: product)
                             }
                     }
                     .listStyle(GroupedListStyle())
