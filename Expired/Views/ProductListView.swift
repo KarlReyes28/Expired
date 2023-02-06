@@ -70,10 +70,10 @@ struct ProductListView: View {
     }
     
     private func deleteItem(index: IndexSet){
-           withAnimation {
-               index.map{filteredProducts[$0]}.forEach(viewContext.delete)
-               productStore.save(viewContext)
-           }
+        withAnimation {
+            index.map{filteredProducts[$0]}.forEach(viewContext.delete)
+            productStore.save(viewContext)
+        }
     }
 
     private func filterProduct(_ product: Product, _ selectedFilter: ProductFilter) -> Bool {
