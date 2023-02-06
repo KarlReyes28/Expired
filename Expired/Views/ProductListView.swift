@@ -12,6 +12,9 @@ struct ProductListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var productStore: ProductStore
     @State private var selectedFilter: ProductFilter = .All
+    @State private var showingDeleteAlert = false
+    @State private var deleteIndexSet: IndexSet?
+
 
     var body: some View {
         NavigationView {
@@ -27,7 +30,7 @@ struct ProductListView: View {
                   } label: {
                       ProductCell(product: product)
                   }
-                }.onDelete(perform: deleteItem)
+                }.onDelete(perform:showingDeleteAlert)
             }
             .listStyle(GroupedListStyle())
             .overlay(Group {
@@ -57,6 +60,17 @@ struct ProductListView: View {
                 }
                 .padding()
             }
+            .alert("Are you sure you want to delete this product?", isPresented: $showingDeleteAlert) {
+                Button("Maybe Later", role: .cancel) {
+                    deleteIndexSet = nil
+                }
+                Button("Yes", role: .destructive) {
+                    if let indexSet = deleteIndexSet {
+                        deleteProducts(indexSet: indexSet)
+                    }
+                    deleteIndexSet = nil
+                }
+            }
         }
     }
 
@@ -69,11 +83,17 @@ struct ProductListView: View {
         }
     }
     
-    private func deleteItem(index: IndexSet){
+    private func deleteProducts(indexSet: IndexSet){
         withAnimation {
-            index.map{filteredProducts[$0]}.forEach(viewContext.delete)
+            indexSet.map{filteredProducts[$0]}.forEach(viewContext.delete)
             productStore.save(viewContext)
         }
+    }
+    
+    private func showingDeleteAlert(indexSet: IndexSet) {
+        // update both properties for later actions
+        deleteIndexSet = indexSet
+        showingDeleteAlert = true
     }
 
     private func filterProduct(_ product: Product, _ selectedFilter: ProductFilter) -> Bool {
