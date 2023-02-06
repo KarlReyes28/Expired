@@ -27,7 +27,7 @@ struct ProductListView: View {
                   } label: {
                       ProductCell(product: product)
                   }
-                }
+                }.onDelete(perform: deleteItem)
             }
             .listStyle(GroupedListStyle())
             .overlay(Group {
@@ -69,6 +69,13 @@ struct ProductListView: View {
         }
     }
     
+    private func deleteItem(index: IndexSet){
+        withAnimation {
+            index.map{filteredProducts[$0]}.forEach(viewContext.delete)
+            productStore.save(viewContext)
+        }
+    }
+
     private func filterProduct(_ product: Product, _ selectedFilter: ProductFilter) -> Bool {
         switch selectedFilter {
             case .All:
