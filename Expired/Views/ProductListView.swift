@@ -17,10 +17,10 @@ struct ProductListView: View {
 
 
     var body: some View {
-        TabView{
+        TabView {
             // 1st Tab
             listView
-            .font(.system(size: 30, weight: .bold, design: .rounded))
+//            .font(.system(size: 12, weight: .bold, design: .rounded))
             .tabItem {
                 Image(systemName: "house.fill")
                 Text("Home")
@@ -28,12 +28,11 @@ struct ProductListView: View {
             
             //2nd Tab
             SettingView()
-            .font(.system(size: 30, weight: .bold, design: .rounded))
+//            .font(.system(size: 12, weight: .bold, design: .rounded))
             .tabItem {
                 Image(systemName: "gear.circle.fill")
                 Text("Settings")
             }
-            
         }
     }
     

@@ -8,8 +8,33 @@
 import SwiftUI
 
 struct SettingView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject var productStore: ProductStore
+    @State private var showingDeleteAlert: Bool = false
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        // Input here for Sandeep's part
+        List {
+            Section(header: Text("Archive List")) {
+                Text("test")
+            }
+
+            Section(header: Text("Data Management")) {
+                Group {
+                    Button("Remove all prducts") {
+                       showingDeleteAlert = true
+                    }
+                    .alert("Are you sure you want to remove all products? \n \n Deleting it will not be recoverable.", isPresented: $showingDeleteAlert) {
+                        Button("No", role: .cancel) {
+                            
+                        }
+                        Button("Yes", role: .destructive, action: {
+                            productStore.deleteAll(viewContext)
+                            
+                        })
+                    }
+                }
+            }
+        }.listStyle(.insetGrouped)
     }
 }
 

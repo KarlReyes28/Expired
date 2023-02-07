@@ -68,5 +68,17 @@ class ProductStore: ObservableObject {
             }
         }
     }
+    
+    func deleteAll(_ context: NSManagedObjectContext) {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try context.execute(batchDeleteRequest)
+            reloadProducts(context)
+        } catch {
+            print(error)
+        }
+    }
 }
 
