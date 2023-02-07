@@ -17,6 +17,28 @@ struct ProductListView: View {
 
 
     var body: some View {
+        TabView{
+            // 1st Tab
+            listView
+            .font(.system(size: 30, weight: .bold, design: .rounded))
+            .tabItem {
+                Image(systemName: "house.fill")
+                Text("Home")
+            }
+            
+            //2nd Tab
+            SettingView()
+            .font(.system(size: 30, weight: .bold, design: .rounded))
+            .tabItem {
+                Image(systemName: "gear.circle.fill")
+                Text("Settings")
+            }
+            
+        }
+    }
+    
+    @ViewBuilder
+    private var listView: some View {
         NavigationView {
             List {
                 Picker(selection: $selectedFilter, label: Text("Filter by status")) {
@@ -25,11 +47,11 @@ struct ProductListView: View {
                     }
                 }
                 ForEach(filteredProducts) { product in
-                  NavigationLink {
-                      ProductEditView(product: product)
-                  } label: {
-                      ProductCell(product: product)
-                  }
+                    NavigationLink {
+                        ProductEditView(product: product)
+                    } label: {
+                        ProductCell(product: product)
+                    }
                 }.onDelete(perform:showingDeleteAlert)
             }
             .listStyle(GroupedListStyle())
