@@ -14,25 +14,21 @@ struct ProductListView: View {
     @State private var selectedFilter: ProductFilter = .All
     @State private var showingDeleteAlert = false
     @State private var deleteIndexSet: IndexSet?
-
-
     var body: some View {
         TabView {
             // 1st Tab
             listView
-//            .font(.system(size: 12, weight: .bold, design: .rounded))
-            .tabItem {
-                Image(systemName: "house.fill")
-                Text("Home")
-            }
-            
-            //2nd Tab
+                .tabItem {
+                    Image(systemName: "house.fill")
+                    Text("Home")
+                }
+
+            // 2nd Tab
             SettingView()
-//            .font(.system(size: 12, weight: .bold, design: .rounded))
-            .tabItem {
-                Image(systemName: "gear.circle.fill")
-                Text("Settings")
-            }
+                .tabItem {
+                    Image(systemName: "gear.circle.fill")
+                    Text("Settings")
+                }
         }
     }
     

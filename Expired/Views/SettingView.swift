@@ -11,7 +11,9 @@ struct SettingView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var productStore: ProductStore
     @State private var showingDeleteAlert: Bool = false
-    @State private var showingSuccessAlert: Bool = false
+    @State private var showingDeleteResultAlert: Bool = false
+    @State private var deleteSuccess: Bool = false
+
     var body: some View {
         // Input here for Sandeep's part
         List {
