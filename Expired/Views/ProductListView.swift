@@ -14,9 +14,26 @@ struct ProductListView: View {
     @State private var selectedFilter: ProductFilter = .All
     @State private var showingDeleteAlert = false
     @State private var deleteIndexSet: IndexSet?
-
-
     var body: some View {
+        TabView {
+            // 1st Tab
+            listView
+                .tabItem {
+                    Image(systemName: "house.fill")
+                    Text("Home")
+                }
+
+            // 2nd Tab
+            SettingView()
+                .tabItem {
+                    Image(systemName: "gear.circle.fill")
+                    Text("Settings")
+                }
+        }
+    }
+    
+    @ViewBuilder
+    private var listView: some View {
         NavigationView {
             List {
                 Picker(selection: $selectedFilter, label: Text("Filter by status")) {
@@ -25,11 +42,11 @@ struct ProductListView: View {
                     }
                 }
                 ForEach(filteredProducts) { product in
-                  NavigationLink {
-                      ProductEditView(product: product)
-                  } label: {
-                      ProductCell(product: product)
-                  }
+                    NavigationLink {
+                        ProductEditView(product: product)
+                    } label: {
+                        ProductCell(product: product)
+                    }
                 }.onDelete(perform:showingDeleteAlert)
             }
             .listStyle(GroupedListStyle())
