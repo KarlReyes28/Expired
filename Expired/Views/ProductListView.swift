@@ -11,29 +11,12 @@ import CoreData
 struct ProductListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var productStore: ProductStore
+    @EnvironmentObject var notificationViewModel: NotificationViewModel
     @State private var selectedFilter: ProductFilter = .All
     @State private var showingDeleteAlert = false
     @State private var deleteIndexSet: IndexSet?
-    var body: some View {
-        TabView {
-            // 1st Tab
-            listView
-                .tabItem {
-                    Image(systemName: "house.fill")
-                    Text("Home")
-                }
 
-            // 2nd Tab
-            SettingView()
-                .tabItem {
-                    Image(systemName: "gear.circle.fill")
-                    Text("Settings")
-                }
-        }
-    }
-    
-    @ViewBuilder
-    private var listView: some View {
+    var body: some View {
         NavigationView {
             List {
                 Picker(selection: $selectedFilter, label: Text("Filter by status")) {
@@ -58,7 +41,7 @@ struct ProductListView: View {
                         .padding()
                 }
             })
-            .navigationBarTitle("Products")
+            .navigationTitle("Products")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink(destination: ProductEditView(product: nil)) {
@@ -99,14 +82,17 @@ struct ProductListView: View {
                 return productStore.products.filter{ filterProduct($0, selectedFilter) }
         }
     }
-    
+
     private func deleteProducts(indexSet: IndexSet){
         withAnimation {
-            indexSet.map{filteredProducts[$0]}.forEach(viewContext.delete)
+            indexSet.map{filteredProducts[$0]}.forEach { product in
+                guard notificationViewModel.cancelProductNotifications(viewContext, product: product) else { return }
+                viewContext.delete(product)
+            }
             productStore.save(viewContext)
         }
     }
-    
+
     private func showingDeleteAlert(indexSet: IndexSet) {
         // update both properties for later actions
         deleteIndexSet = indexSet
@@ -129,8 +115,14 @@ struct ProductListView: View {
 
 struct ProductListView_Previews: PreviewProvider {
     static var previews: some View {
-        ProductListView()
-            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-            .environmentObject(ProductStore(PersistenceController.preview.container.viewContext))
+        TabView {
+            ProductListView()
+                .tabItem {
+                    Image(systemName: "house.fill")
+                    Text("Home")
+                }
+                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+                .environmentObject(ProductStore(PersistenceController.preview.container.viewContext))
+        }
     }
 }

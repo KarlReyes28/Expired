@@ -20,6 +20,8 @@
 		DD9C7F8C29837A9F00E672B2 /* ProductEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9C7F8929837A9F00E672B2 /* ProductEditView.swift */; };
 		DD9C7F8D29837A9F00E672B2 /* ProductListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9C7F8A29837A9F00E672B2 /* ProductListView.swift */; };
 		DD9C7F8E29837A9F00E672B2 /* ProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9C7F8B29837A9F00E672B2 /* ProductCell.swift */; };
+		DDFED09A2999B75900DBBAA6 /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFED0992999B75800DBBAA6 /* NotificationViewModel.swift */; };
+		DDFED09C2999D85A00DBBAA6 /* NotificationCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFED09B2999D85A00DBBAA6 /* NotificationCategory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +39,8 @@
 		DD9C7F8929837A9F00E672B2 /* ProductEditView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductEditView.swift; sourceTree = "<group>"; };
 		DD9C7F8A29837A9F00E672B2 /* ProductListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductListView.swift; sourceTree = "<group>"; };
 		DD9C7F8B29837A9F00E672B2 /* ProductCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCell.swift; sourceTree = "<group>"; };
+		DDFED0992999B75800DBBAA6 /* NotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewModel.swift; sourceTree = "<group>"; };
+		DDFED09B2999D85A00DBBAA6 /* NotificationCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +110,8 @@
 				DD9C7F8429837A8400E672B2 /* ProductStatus.swift */,
 				DD9C7F8329837A8400E672B2 /* ProductStore.swift */,
 				66AF6492298C260F00456759 /* ProductFilter.swift */,
+				DDFED0992999B75800DBBAA6 /* NotificationViewModel.swift */,
+				DDFED09B2999D85A00DBBAA6 /* NotificationCategory.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -185,8 +191,10 @@
 				DD9C7F7929837A2000E672B2 /* Expired.xcdatamodeld in Sources */,
 				DD9C7F8C29837A9F00E672B2 /* ProductEditView.swift in Sources */,
 				DD9C7F8D29837A9F00E672B2 /* ProductListView.swift in Sources */,
+				DDFED09C2999D85A00DBBAA6 /* NotificationCategory.swift in Sources */,
 				DD9C7F8829837A8400E672B2 /* ProductStatus.swift in Sources */,
 				DD9C7F8629837A8400E672B2 /* ProductExtension.swift in Sources */,
+				DDFED09A2999B75900DBBAA6 /* NotificationViewModel.swift in Sources */,
 				DD9C7F6D29837A1F00E672B2 /* ExpiredApp.swift in Sources */,
 				DD9C7F8529837A8400E672B2 /* Persistence.swift in Sources */,
 				DD9C7F8729837A8400E672B2 /* ProductStore.swift in Sources */,
