@@ -72,7 +72,7 @@ class ProductStore: ObservableObject {
     func deleteAll(_ context: NSManagedObjectContext) -> Bool {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-
+        
         do {
             try context.execute(batchDeleteRequest)
             reloadProducts(context)
@@ -82,5 +82,13 @@ class ProductStore: ObservableObject {
             return false
         }
     }
+    
+    func archiveExpiredProducts(_ context: NSManagedObjectContext) {
+        products.forEach{ product in
+            if (product.isExpired) {
+                product.archived = true
+            }
+        }
+        save(context)
+    }
 }
-

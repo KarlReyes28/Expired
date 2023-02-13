@@ -17,6 +17,12 @@ struct SettingView: View {
     var body: some View {
     NavigationView {
         List {
+            Section(header: Text("Archive")) {
+                Button("Archive expired products") {
+                    productStore.archiveExpiredProducts(viewContext)
+                }
+                .foregroundColor(.red)
+            }
             Section(header: Text("Data Management")) {
                 Group {
                     Button("Delete all data") {
