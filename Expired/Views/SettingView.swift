@@ -27,7 +27,7 @@ struct SettingView: View {
                         .alert("Are you sure you want to delete all data?", isPresented: $showingDeleteAlert, actions: {
                             Button("No", role: .cancel) { }
                             Button("Yes", role: .destructive, action: {
-                                deleteSuccess = productStore.deleteAll(viewContext) && notificationVM.cancelNotifications(viewContext)
+                                deleteSuccess = notificationVM.cancelNotifications(viewContext) && productStore.deleteAll(viewContext)
                                 showingDeleteResultAlert = true
                             })
                         }, message: {
