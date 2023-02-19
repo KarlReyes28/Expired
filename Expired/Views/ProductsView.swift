@@ -1,0 +1,128 @@
+//
+//  ProductsView.swift
+//  Expired
+//
+//  Created by Sandeep Singh on 2023-02-13.
+//
+
+import SwiftUI
+
+struct ProductsView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject var productStore: ProductStore
+    @EnvironmentObject var notificationViewModel: NotificationViewModel
+
+    @Binding var products: [Product]
+    @State private var selectedFilter: ProductFilter = .All
+    @State private var filteredProducts: [Product] = []
+    @State private var showingDeleteAlert = false
+    @State private var deleteIndexSet: IndexSet?
+    
+    var showFilter: Bool = false
+    var emptyPlaceholderText: String = "No product found\nPress + to add your first product!"
+
+    var body: some View {
+        List {
+            // Move filter picker here to avoid changing the UI
+            if showFilter {
+                Picker("Filter by status", selection: $selectedFilter) {
+                    ForEach(ProductFilter.allCases) { status in
+                        Text(status.rawValue).tag(status)
+                    }
+                }
+                .onChange(of: selectedFilter) { newValue in
+                    updateFilteredProducts()
+                }
+            }
+            ForEach(filteredProducts) { product in
+                NavigationLink {
+                    ProductEditView(product: product)
+                } label: {
+                    ProductCell(product: product)
+                }
+            }
+            .onDelete(perform: showDeleteAlert)
+        }
+        .listStyle(GroupedListStyle())
+        .overlay(Group {
+            if products.isEmpty {
+                Text(emptyPlaceholderText)
+                    .font(.subheadline)
+                    .multilineTextAlignment(.center)
+                    .padding()
+            }
+        })
+        .popover(isPresented: $productStore.showingMemoPopover) {
+            VStack {
+                Spacer()
+                Text(productStore.selectedProduct?.title ?? "")
+                    .font(.title)
+                Text(productStore.selectedProduct?.memo ?? "")
+                    .padding(.top, 2)
+                Spacer()
+            }
+            .padding()
+        }
+        .alert("Are you sure you want to delete this product?", isPresented: $showingDeleteAlert) {
+            Button("Maybe Later", role: .cancel) {
+                deleteIndexSet = nil
+            }
+            Button("Yes", role: .destructive) {
+                if let indexSet = deleteIndexSet {
+                    deleteProducts(indexSet: indexSet)
+                }
+                deleteIndexSet = nil
+            }
+        }
+        .onAppear {
+            updateFilteredProducts()
+        }
+    }
+    
+    private func updateFilteredProducts() {
+        switch selectedFilter {
+            case .All:
+                filteredProducts = products
+            case .Expired, .ExpiringSoon, .Good:
+                filteredProducts = products.filter{ filterProduct($0, selectedFilter) }
+        }
+    }
+    
+    private func filterProduct(_ product: Product, _ selectedFilter: ProductFilter) -> Bool {
+        switch selectedFilter {
+            case .All:
+                return true
+            case .Expired:
+                return product.isExpired
+            case .ExpiringSoon:
+                return product.isExpiringSoon
+            case .Good:
+                return product.isGood
+        }
+    }
+
+    private func deleteProducts(indexSet: IndexSet){
+        withAnimation {
+            indexSet.map{products[$0]}.forEach { product in
+                guard notificationViewModel.cancelProductNotifications(viewContext, product: product) else { return }
+                viewContext.delete(product)
+            }
+            productStore.save(viewContext)
+        }
+    }
+
+    private func showDeleteAlert(indexSet: IndexSet) {
+        // Update both properties for later actions
+        deleteIndexSet = indexSet
+        showingDeleteAlert = true
+    }
+}
+
+struct ProductsView_Previews: PreviewProvider {
+    static var previews: some View {
+        ProductsView(products: .constant(ProductStore(PersistenceController.preview.container.viewContext).products))
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+            .environmentObject(ProductStore(PersistenceController.preview.container.viewContext))
+            .environmentObject(NotificationViewModel())
+    }
+}
