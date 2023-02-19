@@ -13,11 +13,20 @@ struct SettingView: View {
     @State private var showingDeleteAlert: Bool = false
     @State private var showingDeleteResultAlert: Bool = false
     @State private var deleteSuccess: Bool = false
+    @State private var goesToArchivedProductss: Bool = false
 
     var body: some View {
     NavigationView {
         List {
             Section(header: Text("Archive")) {
+                
+                NavigationLink(destination: ArchivedProductsListView(),
+                               isActive: $goesToArchivedProductss){ Button(action: {goesToArchivedProductss = true}){
+                    Text("Archived Products")
+                }
+                }
+                    
+               // Button("Archived Products")
                 Button("Archive expired products") {
                     productStore.archiveExpiredProducts(viewContext)
                 }

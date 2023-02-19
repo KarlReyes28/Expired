@@ -8,13 +8,20 @@
 import SwiftUI
 
 struct ArchivedProductsListView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+    @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject var productStore: ProductStore
+        var body: some View {
+        NavigationView {
+            ProductListView(products: $productStore.archivedProducts)
+        }
+        
     }
 }
 
 struct ArchivedProductsListView_Previews: PreviewProvider {
     static var previews: some View {
         ArchivedProductsListView()
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+            .environmentObject(ProductStore(PersistenceController.preview.container.viewContext))
     }
 }

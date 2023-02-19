@@ -10,6 +10,7 @@ import CoreData
 
 class ProductStore: ObservableObject {
     @Published var products: [Product] = []
+    @Published var archivedProducts : [Product] = []
     @Published var selectedProduct: Product? {
         didSet {
             // show memo popover when a product is selected by tapping the "memo icon"
@@ -33,6 +34,7 @@ class ProductStore: ObservableObject {
     
     func reloadProducts(_ context: NSManagedObjectContext) {
         products = fetchProducts(context)
+        archivedProducts = archivedProducts(context)
     }
     
     func fetchProducts(_ context: NSManagedObjectContext) -> [Product] {
@@ -91,4 +93,21 @@ class ProductStore: ObservableObject {
         }
         save(context)
     }
+    func archivedProducts(_ context: NSManagedObjectContext) -> [Product] {
+        do {
+            let request = Product.fetchRequest()
+            request.sortDescriptors = sortOrder()
+            request.predicate = archievPredicate()
+            return try context.fetch(request) as [Product]
+        } catch let error {
+            print("Unresolved error \(error)")
+        }
+        
+        return []
+    }
+    
+    private func archievPredicate() -> NSPredicate {
+        return NSPredicate(format: "archived == %@", NSNumber(value: true))
+    }
+
 }
