@@ -5,7 +5,16 @@
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="title" attributeType="String"/>
         <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="has" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Product" inverseName="linkedTo" inverseEntity="Product"/>
+        <relationship name="has" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="Product"/>
+    </entity>
+    <entity name="LocalNotification" representedClassName="LocalNotification" syncable="YES" codeGenerationType="class">
+        <attribute name="category" attributeType="String"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="localNotificationRequest" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="product" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="belongsTo" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Product"/>
     </entity>
     <entity name="Product" representedClassName="Product" syncable="YES" codeGenerationType="class">
         <attribute name="archived" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -17,6 +26,7 @@
         <attribute name="memo" optional="YES" attributeType="String"/>
         <attribute name="title" attributeType="String"/>
         <attribute name="updatedAt" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="linkedTo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Category" inverseName="has" inverseEntity="Category"/>
+        <relationship name="has" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="LocalNotification"/>
+        <relationship name="linkedTo" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Category"/>
     </entity>
 </model>

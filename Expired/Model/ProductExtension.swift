@@ -18,19 +18,22 @@ extension Product {
     }
     
     var isExpiringSoon: Bool {
-        let now = Date()
-        let twoDaysLater = Calendar.current.date(byAdding: .day, value: 2, to: now)!
-        if let date = expiryDate {
-            return !isExpired && date < twoDaysLater
-        }
-        
-        return false
+        guard let date = expiringSoonDate else { return false }
+        return !isExpired && Date() > date
     }
     
     var isGood: Bool {
         return !(isExpired || isExpiringSoon)
     }
-    
+
+    var expiringSoonDate: Date? {
+        if let date = expiryDate {
+            return Calendar.current.date(byAdding: .day, value: -2, to: date)
+        }
+        
+        return nil
+    }
+
     var status: ProductStatus {
         if isExpired {
             return .Expired

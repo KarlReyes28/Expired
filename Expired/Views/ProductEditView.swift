@@ -14,6 +14,7 @@ struct ProductEditView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var productStore: ProductStore
+    @EnvironmentObject var notificationVM: NotificationViewModel
 
     @State private var selectedProduct: Product?
     @State private var title: String
@@ -54,7 +55,7 @@ struct ProductEditView: View {
             }
         }
         .listStyle(GroupedListStyle())
-        .navigationBarTitle(navTitle)
+        .navigationTitle(navTitle)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
@@ -89,6 +90,7 @@ struct ProductEditView: View {
             selectedProduct?.updatedAt = Date()
             
             productStore.save(viewContext)
+            notificationVM.updateProductNotifications(viewContext, product: selectedProduct!)
             self.presentationMode.wrappedValue.dismiss()
         }
     }
