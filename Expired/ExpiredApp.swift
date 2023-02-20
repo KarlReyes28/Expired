@@ -12,12 +12,12 @@ struct ExpiredApp: App {
     @Environment(\.scenePhase) var scenePhase
     
     let persistenceController = PersistenceController.shared
-    
+
     var body: some Scene {
         WindowGroup {
             TabView {
                 // 1st Tab
-                ProductListView()
+                HomeView()
                     .tabItem {
                         Image(systemName: "house.fill")
                         Text("Home")

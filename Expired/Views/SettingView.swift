@@ -11,6 +11,10 @@ struct SettingView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var productStore: ProductStore
     @EnvironmentObject var notificationVM: NotificationViewModel
+
+    @State private var showingArchiveAlert: Bool = false
+    @State private var showingArchiveResultAlert: Bool = false
+    @State private var archiveSuccess: Bool = false
     @State private var showingDeleteAlert: Bool = false
     @State private var showingDeleteResultAlert: Bool = false
     @State private var deleteSuccess: Bool = false
@@ -18,10 +22,31 @@ struct SettingView: View {
     var body: some View {
         NavigationView {
             List {
+                Section(header: Text("Archive")) {
+                    NavigationLink(destination: ArchivedProductsView()) {
+                        Text("Archived products")
+                    }
+                    Button("Archive expired products") {
+                        showingArchiveAlert = true
+                    }
+                    .foregroundColor(.red)
+                    .alert("Are you sure you want to archive all expired products?", isPresented: $showingArchiveAlert, actions: {
+                        Button("No", role: .cancel) { }
+                        Button("Yes", role: .destructive, action: {
+                            archiveSuccess = productStore.archiveExpiredProducts(viewContext)
+                            showingArchiveResultAlert = true
+                        })
+                    })
+                    .alert(archiveSuccess ? "Successfully archived all expired products" : "Archiving failure\nPlease try again", isPresented: $showingArchiveResultAlert) {
+                        Button("OK", role: .cancel) {
+                            archiveSuccess = false
+                        }
+                    }
+                }
                 Section(header: Text("Data Management")) {
                     Group {
                         Button("Delete all data") {
-                           showingDeleteAlert = true
+                            showingDeleteAlert = true
                         }
                         .foregroundColor(.red)
                         .alert("Are you sure you want to delete all data?", isPresented: $showingDeleteAlert, actions: {
@@ -55,5 +80,8 @@ struct SettingView_Previews: PreviewProvider {
                     Text("Settings")
                 }
         }
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        .environmentObject(ProductStore(PersistenceController.preview.container.viewContext))
+        .environmentObject(NotificationViewModel())
     }
 }

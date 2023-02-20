@@ -9,10 +9,17 @@ import SwiftUI
 import CoreData
 
 class ProductStore: ObservableObject {
-    @Published var products: [Product] = []
+    @Published var products: [Product] = [] {
+        didSet {
+            updateUnarchivedProduts()
+            updateArchivedProduts()
+        }
+    }
+    @Published var unarchivedProducts: [Product] = []
+    @Published var archivedProducts : [Product] = []
     @Published var selectedProduct: Product? {
         didSet {
-            // show memo popover when a product is selected by tapping the "memo icon"
+            // Show memo popover when a product is selected by tapping the "memo icon"
             if (selectedProduct != nil) {
                 showingMemoPopover = true
             }
@@ -20,26 +27,78 @@ class ProductStore: ObservableObject {
     }
     @Published var showingMemoPopover = false {
         didSet {
-            // set selectedProduct to nil whenever popover is dismissed
+            // Set selectedProduct to nil whenever popover is dismissed
             if (!showingMemoPopover) {
                 selectedProduct = nil
             }
         }
     }
-    
+
     init(_ context: NSManagedObjectContext) {
         reloadProducts(context)
     }
-    
+
     func reloadProducts(_ context: NSManagedObjectContext) {
         products = fetchProducts(context)
     }
+
+    func save(_ context: NSManagedObjectContext) -> Bool {
+        var result = true
+
+        if context.hasChanges {
+            do {
+                try context.save()
+                reloadProducts(context)
+            } catch {
+                let nsError = error as NSError
+                print("Unresolved error \(nsError), \(nsError.userInfo)")
+                result = false
+            }
+        }
+
+        return result
+    }
     
-    func fetchProducts(_ context: NSManagedObjectContext) -> [Product] {
+    func archiveExpiredProducts(_ context: NSManagedObjectContext) -> Bool {
+        products.forEach{ product in
+            if (product.isExpired) {
+                product.archived = true
+            }
+        }
+        
+        return save(context)
+    }
+
+    func deleteAll(_ context: NSManagedObjectContext) -> Bool {
+        var result = true
+
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try context.execute(batchDeleteRequest)
+            reloadProducts(context)
+        } catch {
+            print(error)
+            result = false
+        }
+
+        return result
+    }
+    
+    private func updateUnarchivedProduts() {
+        unarchivedProducts = products.filter { !$0.archived }
+    }
+    
+    private func updateArchivedProduts() {
+        archivedProducts = products.filter { $0.archived }
+    }
+
+    private func queryProducts(_ context: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor]? = nil, predicate: NSPredicate? = nil) -> [Product] {
         do {
             let request = Product.fetchRequest()
-            request.sortDescriptors = sortOrder()
-            request.predicate = predicate()
+            request.sortDescriptors = sortDescriptors
+            request.predicate = predicate
             return try context.fetch(request) as [Product]
         } catch let error {
             print("Unresolved error \(error)")
@@ -48,39 +107,8 @@ class ProductStore: ObservableObject {
         return []
     }
     
-    private func sortOrder() -> [NSSortDescriptor] {
+    private func fetchProducts(_ context: NSManagedObjectContext) -> [Product] {
         let expiryDateSort = NSSortDescriptor(keyPath: \Product.expiryDate, ascending: true)
-        return [expiryDateSort]
-    }
-    
-    private func predicate() -> NSPredicate {
-        return NSPredicate(format: "archived != %@", NSNumber(value: true))
-    }
-    
-    func save(_ context: NSManagedObjectContext) {
-        if context.hasChanges {
-            do {
-                try context.save()
-                reloadProducts(context)
-            } catch {
-                let nsError = error as NSError
-                print("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-    
-    func deleteAll(_ context: NSManagedObjectContext) -> Bool {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-
-        do {
-            try context.execute(batchDeleteRequest)
-            reloadProducts(context)
-            return true
-        } catch {
-            print(error)
-            return false
-        }
+        return queryProducts(context, sortDescriptors: [expiryDateSort])
     }
 }
-

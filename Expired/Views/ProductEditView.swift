@@ -74,23 +74,35 @@ struct ProductEditView: View {
     
     private func save() {
         withAnimation {
+            let now = Date()
+
             // To be optimized
+            var updatedProduct: Product
+
             if selectedProduct == nil {
-                selectedProduct = Product(context: viewContext)
-                selectedProduct?.id = UUID()
-                selectedProduct?.category = nil
-                selectedProduct?.image = nil
-                selectedProduct?.archived = false
-                selectedProduct?.createdAt = Date()
+                updatedProduct = Product(context: viewContext)
+                updatedProduct.id = UUID()
+                updatedProduct.category = nil
+                updatedProduct.image = nil
+                updatedProduct.archived = false
+                updatedProduct.createdAt = now
+            } else {
+                updatedProduct = selectedProduct!
+
+                // If the existed product was archived and its new expiryDate is later from now
+                // Reset the its archived value to false (unarchive it)
+                if updatedProduct.archived && expiryDate > Date() {
+                    updatedProduct.archived = false
+                }
             }
 
-            selectedProduct?.title = title
-            selectedProduct?.expiryDate = expiryDate
-            selectedProduct?.memo = memo
-            selectedProduct?.updatedAt = Date()
-            
+            updatedProduct.title = title
+            updatedProduct.expiryDate = expiryDate
+            updatedProduct.memo = memo
+            updatedProduct.updatedAt = now
+
             productStore.save(viewContext)
-            notificationVM.updateProductNotifications(viewContext, product: selectedProduct!)
+            notificationVM.updateProductNotifications(viewContext, product: updatedProduct)
             self.presentationMode.wrappedValue.dismiss()
         }
     }
@@ -98,6 +110,8 @@ struct ProductEditView: View {
 
 struct ProductEditView_Previews: PreviewProvider {
     static var previews: some View {
-        ProductEditView(product: ProductStore(PersistenceController.preview.container.viewContext).products[0])
+        NavigationView {
+            ProductEditView(product: ProductStore(PersistenceController.preview.container.viewContext).products[0])
+        }
     }
 }
