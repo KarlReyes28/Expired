@@ -14,7 +14,6 @@ struct ProductsView: View {
 
     @Binding var products: [Product]
     @State private var selectedFilter: ProductFilter = .All
-    @State private var filteredProducts: [Product] = []
     @State private var showingDeleteAlert = false
     @State private var deleteIndexSet: IndexSet?
     
@@ -29,9 +28,6 @@ struct ProductsView: View {
                     ForEach(ProductFilter.allCases) { status in
                         Text(status.rawValue).tag(status)
                     }
-                }
-                .onChange(of: selectedFilter) { newValue in
-                    updateFilteredProducts()
                 }
             }
             ForEach(filteredProducts) { product in
@@ -74,20 +70,17 @@ struct ProductsView: View {
                 deleteIndexSet = nil
             }
         }
-        .onAppear {
-            updateFilteredProducts()
-        }
     }
-    
-    private func updateFilteredProducts() {
+
+    var filteredProducts: [Product] {
         switch selectedFilter {
             case .All:
-                filteredProducts = products
+                return products
             case .Expired, .ExpiringSoon, .Good:
-                filteredProducts = products.filter{ filterProduct($0, selectedFilter) }
+                return products.filter{ filterProduct($0, selectedFilter) }
         }
     }
-    
+
     private func filterProduct(_ product: Product, _ selectedFilter: ProductFilter) -> Bool {
         switch selectedFilter {
             case .All:
