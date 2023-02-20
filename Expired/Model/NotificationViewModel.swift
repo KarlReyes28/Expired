@@ -102,6 +102,9 @@ class NotificationViewModel: ObservableObject {
 
         // Schedule the expiring-soon notification
         scheduleProductNotification(context, product: product, notificationCategory: .ExpiringSoon)
+        
+        // Schedule the expired notification
+        scheduleProductNotification(context, product: product, notificationCategory: .Expired)
     }
 
     // Cancel a product's notifications (expiring-soon | expired)
