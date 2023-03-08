@@ -12,14 +12,24 @@ struct HomeView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var productStore: ProductStore
 
+    @State private var selectedCategory: Category?
+
     var body: some View {
         NavigationView {
             ProductsView(products: $productStore.unarchivedProducts, showFilter: true)
                 .navigationTitle("Products")
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
+                    ToolbarItem(placement: .navigationBarLeading) {
                         NavigationLink(destination: ProductEditView(product: nil)) {
                             Image(systemName: "plus")
+                        }
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Picker("", selection: $selectedCategory) {
+                            Text("All Categories").tag(Category?(nil))
+                            ForEach(productStore.categories) { category in
+                                Text(category.title ?? "").tag(category as Category?)
+                            }
                         }
                     }
                 }

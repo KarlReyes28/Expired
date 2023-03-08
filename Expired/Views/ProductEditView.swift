@@ -18,6 +18,7 @@ struct ProductEditView: View {
 
     @State private var selectedProduct: Product?
     @State private var title: String
+    @State private var category: Category?
     @State private var memo: String
     @State private var expiryDate: Date
 
@@ -32,6 +33,8 @@ struct ProductEditView: View {
             _expiryDate = State(initialValue: DEFAULT_EXPIRY_DATE)
             _memo = State(initialValue: "")
         }
+        
+        _category = State(initialValue: nil)
     }
 
     var body: some View {
@@ -44,6 +47,19 @@ struct ProductEditView: View {
                 HStack {
                     Image(systemName: "note.text")
                     TextField("Memo", text: $memo)
+                }
+            }
+            
+            Section(header: Text("Category")) {
+                HStack {
+                    Image(systemName: "tray.fill")
+                    Picker("Category", selection: $category) {
+                        Text("None").tag(Category?(nil))
+                        ForEach(productStore.categories) { category in
+                            Text(category.title ?? "Unknown").tag(category as Category?)
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())
                 }
             }
             
@@ -64,6 +80,11 @@ struct ProductEditView: View {
                     Text("Save")
                 }
                 .disabled(title.isEmpty)
+            }
+        }
+        .onAppear {
+            if (selectedProduct != nil) {
+                category = productStore.getCategoryById(uuid: selectedProduct!.category)
             }
         }
     }
@@ -96,6 +117,7 @@ struct ProductEditView: View {
                 }
             }
 
+            updatedProduct.category = category?.id
             updatedProduct.title = title
             updatedProduct.expiryDate = expiryDate
             updatedProduct.memo = memo
@@ -113,5 +135,8 @@ struct ProductEditView_Previews: PreviewProvider {
         NavigationView {
             ProductEditView(product: ProductStore(PersistenceController.preview.container.viewContext).products[0])
         }
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        .environmentObject(ProductStore(PersistenceController.preview.container.viewContext))
+        .environmentObject(NotificationViewModel())
     }
 }
