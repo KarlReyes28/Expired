@@ -98,19 +98,13 @@ class NotificationViewModel: ObservableObject {
     // Update a product's notifications (expiring-soon | expired)
     func updateProductNotifications(_ context: NSManagedObjectContext, product: Product) {
         // Cancel notifications if applicable
-        guard cancelProductNotifications(context, product: product) else { return }
+        cancelProductNotifications(context, product: product)
 
         // Schedule the expiring-soon notification
         scheduleProductNotification(context, product: product, notificationCategory: .ExpiringSoon)
-        
+
         // Schedule the expired notification
         scheduleProductNotification(context, product: product, notificationCategory: .Expired)
-    }
-
-    // Cancel a product's notifications (expiring-soon | expired)
-    func cancelProductNotifications(_ context: NSManagedObjectContext, product: Product) -> Bool {
-        let predicate = NSPredicate(format: "%K == %@", "product", product.id! as CVarArg)
-        return cancelNotifications(context, predicate: predicate)
     }
 
     // Cancel notifications by conditions:
@@ -122,6 +116,19 @@ class NotificationViewModel: ObservableObject {
         let notificationRequestIds = notifications.map{$0.localNotificationRequest!}
         cancelScheduledNotificationRequests(uuids: notificationRequestIds)
         return deleteNotifications(context, predicate: predicate)
+    }
+
+    // Cancel a product's notifications (expiring-soon | expired)
+    // Then delete notifications belong to the product via Core Data relationships
+    func cancelProductNotifications(_ context: NSManagedObjectContext, product: Product) {
+        let notificationList = Array(product.notifications as? Set<LocalNotification> ?? [])
+        guard notificationList.count > 0 else { return }
+        let notificationRequestIds = notificationList.map { notification in
+            notification.localNotificationRequest!
+        }
+        cancelScheduledNotificationRequests(uuids: notificationRequestIds)
+        product.removeFromNotifications(product.notifications!)
+        save(context)
     }
 
     // Schedule a notification of a given product and its notification category (expiring-soon | expired)
@@ -142,16 +149,19 @@ class NotificationViewModel: ObservableObject {
             guard let notificationDate = notificationDate else { return }
             guard let notificationRequestId = await scheduleNotificationRequest(title: product.title!, body: notificationContent, date: notificationDate) else { return }
             
-            let now = Date()
-            let notification = LocalNotification(context: context)
-            notification.id = UUID()
-            notification.product = product.id
-            notification.localNotificationRequest = notificationRequestId
-            notification.category = notificationCategory.rawValue
-            notification.createdAt = now
-            notification.updatedAt = now
-            save(context)
-            print("------ Notification saved: \(String(describing: product.id?.uuidString)), \(String(describing: product.title)), \(notificationCategory.rawValue)")
+            // Data should be posted on main thread
+            DispatchQueue.main.async {
+                let now = Date()
+                let notification = LocalNotification(context: context)
+                notification.id = UUID()
+                notification.product = product
+                notification.localNotificationRequest = notificationRequestId
+                notification.category = notificationCategory.rawValue
+                notification.createdAt = now
+                notification.updatedAt = now
+                self.save(context)
+                print("------ Notification saved: \(String(describing: product.id?.uuidString)), \(String(describing: product.title)), \(notificationCategory.rawValue)")
+            }
         }
     }
 
@@ -201,8 +211,8 @@ class NotificationViewModel: ObservableObject {
             do {
                 try context.save()
             } catch {
-                let error = error
-                print("------ Saving Local Notification to Core Data error: \(error.localizedDescription)")
+                let nsError = error as NSError
+                print("Unresolved error \(nsError), \(nsError.userInfo)")
             }
         }
     }

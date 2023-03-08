@@ -13,6 +13,8 @@ struct CategoriesView: View {
 
     @State private var showingFormAlert: Bool = false
     @State private var category: String = ""
+    
+    var emptyPlaceholderText: String = "No category found\nPress + to add your first category!"
 
     var body: some View {
         NavigationView {
@@ -21,6 +23,14 @@ struct CategoriesView: View {
                     Text(category.title ?? "")
                 }
             }
+            .overlay(Group {
+                if productStore.categories.isEmpty {
+                    Text(emptyPlaceholderText)
+                        .font(.subheadline)
+                        .multilineTextAlignment(.center)
+                        .padding()
+                }
+            })
             .navigationTitle("Categories")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

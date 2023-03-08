@@ -28,7 +28,7 @@ struct CategoryEditView: View {
         List {
             Section(header: Text("Category Info")) {
                 HStack {
-                    Image(systemName: "tray.fill")
+                    Image(systemName: "pencil")
                     TextField("Title", text: $title)
                 }
             }

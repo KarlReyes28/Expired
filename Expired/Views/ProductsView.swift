@@ -97,7 +97,7 @@ struct ProductsView: View {
     private func deleteProducts(indexSet: IndexSet){
         withAnimation {
             indexSet.map{products[$0]}.forEach { product in
-                guard notificationViewModel.cancelProductNotifications(viewContext, product: product) else { return }
+                notificationViewModel.cancelProductNotifications(viewContext, product: product)
                 viewContext.delete(product)
             }
             productStore.save(viewContext)

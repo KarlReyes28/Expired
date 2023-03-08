@@ -60,13 +60,7 @@ class ProductStore: ObservableObject {
 
         return result
     }
-    
-    func getCategoryById(uuid: UUID?) -> Category? {
-        return categories.first { category in
-            category.id == uuid
-        }
-    }
-    
+
     func archiveExpiredProducts(_ context: NSManagedObjectContext) -> Bool {
         products.forEach{ product in
             if (product.isExpired) {
@@ -80,11 +74,17 @@ class ProductStore: ObservableObject {
     func deleteAll(_ context: NSManagedObjectContext) -> Bool {
         var result = true
 
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        // Batch deleting products
+        let productFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
+        let productBatchDeleteRequest = NSBatchDeleteRequest(fetchRequest: productFetchRequest)
+
+        // Batch deleting categories
+        let categoryFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Category")
+        let categoryBatchDeleteRequest = NSBatchDeleteRequest(fetchRequest: categoryFetchRequest)
 
         do {
-            try context.execute(batchDeleteRequest)
+            try context.execute(productBatchDeleteRequest)
+            try context.execute(categoryBatchDeleteRequest)
             reloadData(context)
         } catch {
             print(error)

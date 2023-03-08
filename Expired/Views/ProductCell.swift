@@ -14,9 +14,21 @@ struct ProductCell: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(product.title ?? "")
-                    .font(.headline)
-                    .padding(.bottom, 2)
+                HStack(alignment: .center) {
+                    Text(product.title ?? "")
+                        .font(.headline)
+                        .padding(.bottom, 2)
+                        .padding(.trailing, 6)
+                    if (product.category != nil) {
+                        // Access a product's category via Core Data relationship
+                        Text(product.category?.title ?? "")
+                            .font(.caption2)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 3)
+                            .background(.mint)
+                            .cornerRadius(3)
+                    }
+                }
                 HStack {
                     Image(systemName: product.isExpired ? "hourglass.bottomhalf.fill" : "hourglass.tophalf.fill")
                     Text("\(product.relativeExpiryDate)")
