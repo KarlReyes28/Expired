@@ -37,7 +37,7 @@ struct PersistenceController {
             product.expiryDate = Date(timeIntervalSinceNow: 86400 * Double.random(in: -3...6))
             product.memo = Int.random(in: -1...1) > 0 ? "Memo of \(productTitles[index]), I am trying to make the memo long to test the alignment." : nil
             product.archived = false
-            product.category = Int.random(in: -1...1) > 0 ? categories.randomElement() : nil
+            product.category = Int.random(in: -5...9) >= 0 ? categories.randomElement() : nil
             product.image = nil
             product.createdAt = now
             product.updatedAt = now

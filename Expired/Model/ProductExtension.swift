@@ -60,4 +60,9 @@ extension Product {
         let formatter = RelativeDateTimeFormatter()
         return formatter.localizedString(for: date, relativeTo: Date())
     }
+    
+    var hasMemo: Bool {
+        guard let memo = memo else { return false }
+        return !memo.isEmpty
+    }
 }

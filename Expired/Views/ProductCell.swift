@@ -14,20 +14,11 @@ struct ProductCell: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                HStack(alignment: .center) {
+                HStack {
                     Text(product.title ?? "")
                         .font(.headline)
                         .padding(.bottom, 2)
                         .padding(.trailing, 6)
-                    if (product.category != nil) {
-                        // Access a product's category via Core Data relationship
-                        Text(product.category?.title ?? "")
-                            .font(.caption2)
-                            .padding(.horizontal, 5)
-                            .padding(.vertical, 3)
-                            .background(Color.green.opacity(0.25))
-                            .cornerRadius(3)
-                    }
                 }
                 HStack {
                     Image(systemName: product.isExpired ? "hourglass.bottomhalf.fill" : "hourglass.tophalf.fill")
@@ -37,8 +28,18 @@ struct ProductCell: View {
                 .foregroundColor(product.statusColor)
             }
             Spacer()
-            if let memo = product.memo {
-                if !memo.isEmpty {
+            VStack(alignment: .trailing) {
+                if (product.category != nil) {
+                    // Access a product's category via Core Data relationship
+                    Text(product.category?.title ?? "")
+                        .font(.caption2)
+                        .padding(.horizontal, 5)
+                        .padding(.vertical, 3)
+                        .background(Color.green.opacity(0.3))
+                        .cornerRadius(3)
+                        .padding(.bottom, product.hasMemo ? 4 : 0)
+                }
+                if product.hasMemo {
                     Image(systemName: "note.text")
                         .onTapGesture {
                             productStore.selectedProduct = product
