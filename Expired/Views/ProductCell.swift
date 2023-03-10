@@ -25,7 +25,7 @@ struct ProductCell: View {
                             .font(.caption2)
                             .padding(.horizontal, 5)
                             .padding(.vertical, 3)
-                            .background(.mint)
+                            .background(Color.green.opacity(0.25))
                             .cornerRadius(3)
                     }
                 }
@@ -33,7 +33,7 @@ struct ProductCell: View {
                     Image(systemName: product.isExpired ? "hourglass.bottomhalf.fill" : "hourglass.tophalf.fill")
                     Text("\(product.relativeExpiryDate)")
                 }
-                .font(.caption)
+                .font(.subheadline)
                 .foregroundColor(product.statusColor)
             }
             Spacer()
