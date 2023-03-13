@@ -18,7 +18,6 @@ struct ProductCell: View {
                     Text(product.title ?? "")
                         .font(.headline)
                         .padding(.bottom, 2)
-                        .padding(.trailing, 6)
                 }
                 HStack {
                     Image(systemName: product.isExpired ? "hourglass.bottomhalf.fill" : "hourglass.tophalf.fill")
