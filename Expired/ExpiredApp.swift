@@ -24,6 +24,13 @@ struct ExpiredApp: App {
                     }
 
                 // 2nd Tab
+                CategoriesView()
+                    .tabItem {
+                        Image(systemName: "tray.fill")
+                        Text("Categories")
+                    }
+
+                // 3rd Tab
                 SettingView()
                     .tabItem {
                         Image(systemName: "gear.circle.fill")

@@ -9,6 +9,7 @@ import SwiftUI
 import CoreData
 
 class ProductStore: ObservableObject {
+    @Published var categories: [Category] = []
     @Published var products: [Product] = [] {
         didSet {
             updateUnarchivedProduts()
@@ -35,10 +36,11 @@ class ProductStore: ObservableObject {
     }
 
     init(_ context: NSManagedObjectContext) {
-        reloadProducts(context)
+        reloadData(context)
     }
 
-    func reloadProducts(_ context: NSManagedObjectContext) {
+    func reloadData(_ context: NSManagedObjectContext) {
+        categories = fetchCategories(context)
         products = fetchProducts(context)
     }
 
@@ -48,7 +50,7 @@ class ProductStore: ObservableObject {
         if context.hasChanges {
             do {
                 try context.save()
-                reloadProducts(context)
+                reloadData(context)
             } catch {
                 let nsError = error as NSError
                 print("Unresolved error \(nsError), \(nsError.userInfo)")
@@ -58,7 +60,7 @@ class ProductStore: ObservableObject {
 
         return result
     }
-    
+
     func archiveExpiredProducts(_ context: NSManagedObjectContext) -> Bool {
         products.forEach{ product in
             if (product.isExpired) {
@@ -72,12 +74,18 @@ class ProductStore: ObservableObject {
     func deleteAll(_ context: NSManagedObjectContext) -> Bool {
         var result = true
 
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        // Batch deleting products
+        let productFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Product")
+        let productBatchDeleteRequest = NSBatchDeleteRequest(fetchRequest: productFetchRequest)
+
+        // Batch deleting categories
+        let categoryFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Category")
+        let categoryBatchDeleteRequest = NSBatchDeleteRequest(fetchRequest: categoryFetchRequest)
 
         do {
-            try context.execute(batchDeleteRequest)
-            reloadProducts(context)
+            try context.execute(productBatchDeleteRequest)
+            try context.execute(categoryBatchDeleteRequest)
+            reloadData(context)
         } catch {
             print(error)
             result = false
@@ -93,6 +101,19 @@ class ProductStore: ObservableObject {
     private func updateArchivedProduts() {
         archivedProducts = products.filter { $0.archived }
     }
+    
+    private func queryCategories(_ context: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor]? = nil, predicate: NSPredicate? = nil) -> [Category] {
+        do {
+            let request = Category.fetchRequest()
+            request.sortDescriptors = sortDescriptors
+            request.predicate = predicate
+            return try context.fetch(request) as [Category]
+        } catch let error {
+            print("Unresolved error \(error)")
+        }
+        
+        return []
+    }
 
     private func queryProducts(_ context: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor]? = nil, predicate: NSPredicate? = nil) -> [Product] {
         do {
@@ -105,6 +126,12 @@ class ProductStore: ObservableObject {
         }
         
         return []
+    }
+    
+    private func fetchCategories(_ context: NSManagedObjectContext) -> [Category] {
+        let updatedDateSort = NSSortDescriptor(keyPath: \Category.updatedAt, ascending: false)
+        let titleSort = NSSortDescriptor(keyPath: \Category.title, ascending: true)
+        return queryCategories(context, sortDescriptors: [updatedDateSort, titleSort])
     }
     
     private func fetchProducts(_ context: NSManagedObjectContext) -> [Product] {

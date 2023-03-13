@@ -14,8 +14,22 @@ struct PersistenceController {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
         let productTitles = ["Milk: Natual or Fair Life...I don't remember. It doesn't matter.", "Banana", "Beef", "Pork", "Cake", "Egg", "Beer", "Cat Food"]
+        let categoryTitles = ["🥬 Vegetable", "🍓 Fruit", "🍖 Meat", "🥛 Dairy", "🍺 Alcohol"]
         
-        // Data for preview
+        let now = Date()
+        
+        // Categories mock data
+        var categories: [Category] = []
+        for index in 0..<categoryTitles.count {
+            let category = Category(context: viewContext)
+            category.id = UUID()
+            category.title = categoryTitles[index]
+            category.createdAt = now
+            category.updatedAt = now
+            categories.append(category)
+        }
+
+        // Products mock data
         for index in 0..<productTitles.count {
             let product = Product(context: viewContext)
             product.id = UUID()
@@ -23,10 +37,10 @@ struct PersistenceController {
             product.expiryDate = Date(timeIntervalSinceNow: 86400 * Double.random(in: -3...6))
             product.memo = Int.random(in: -1...1) > 0 ? "Memo of \(productTitles[index]), I am trying to make the memo long to test the alignment." : nil
             product.archived = false
-            product.category = nil
+            product.category = Int.random(in: -5...9) >= 0 ? categories.randomElement() : nil
             product.image = nil
-            product.createdAt = Date()
-            product.updatedAt = Date()
+            product.createdAt = now
+            product.updatedAt = now
         }
         return result
     }()
