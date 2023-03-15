@@ -22,6 +22,7 @@ struct CategoriesView: View {
                 ForEach(productStore.categories) { category in
                     Text(category.title ?? "")
                 }
+                .onDelete(perform: deleteCategory)
             }
             .overlay(Group {
                 if productStore.categories.isEmpty {
@@ -43,6 +44,14 @@ struct CategoriesView: View {
             }
         }
     }
+    private func deleteCategory(indexSet: IndexSet){
+            withAnimation {
+                indexSet.map{productStore.categories[$0]}.forEach{ category in
+                    viewContext.delete(category)
+                }
+                productStore.save(viewContext)
+            }
+        }
 }
 
 struct CategoriesView_Previews: PreviewProvider {
