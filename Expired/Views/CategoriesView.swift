@@ -20,7 +20,11 @@ struct CategoriesView: View {
         NavigationView {
             List {
                 ForEach(productStore.categories) { category in
-                    Text(category.title ?? "")
+                    NavigationLink {
+                        CategoryEditView(category: category)
+                    } label: {
+                        Text(category.title ?? "")
+                    }
                 }
             }
             .overlay(Group {
