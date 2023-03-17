@@ -11,7 +11,6 @@ struct CategoriesView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var productStore: ProductStore
     @State private var showingNotDeleteAlert: Bool = false
-//    @State private var category: String = ""
     @State private var showingDeleteAlert = false
     @State private var deleteIndexSet: IndexSet?
     
@@ -51,7 +50,7 @@ struct CategoriesView: View {
                 }
             }
             .alert("Unable To Delete", isPresented: $showingNotDeleteAlert , actions: {
-                Button("Ok", role: .cancel) {
+                Button("OK", role: .cancel) {
                 }
             }, message: {
                 Text("Some products are linked to this category")
@@ -68,18 +67,20 @@ struct CategoriesView: View {
             }
         }
     }
-    private func deleteCategory(indexSet: IndexSet){
+
+    private func deleteCategory(indexSet: IndexSet) {
         withAnimation {
             indexSet.map{productStore.categories[$0]}.forEach{ category in
-                if(category.products?.count == 0){
-                    viewContext.delete(category)
-                }else{
-                   showingNotDeleteAlert =  true
+                if category.products?.count ?? 0 > 0 {
+                    showingNotDeleteAlert = true
+                } else {
+                   viewContext.delete(category)
                 }
-                productStore.save(viewContext)
             }
+            productStore.save(viewContext)
         }
     }
+
     private func showDeleteAlert(indexSet: IndexSet) {
         deleteIndexSet = indexSet
         showingDeleteAlert = true
