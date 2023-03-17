@@ -20,12 +20,16 @@ struct CategoriesView: View {
         NavigationView {
             List {
                 ForEach(productStore.categories) { category in
-                    VStack(alignment: .leading) {
-                        Text(category.title ?? "")
-                            .font(.headline)
-                        Text(category.products?.count ?? 0 > 0 ? "\(category.products!.count) products" : "No product")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
+                    NavigationLink {
+                        CategoryEditView(category: category)
+                    } label: {
+                        VStack(alignment: .leading) {
+                            Text(category.title ?? "")
+                                .font(.headline)
+                            Text(category.products?.count ?? 0 > 0 ? "\(category.products!.count) products" : "No product")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                        }
                     }
                 }
                 .onDelete(perform: showDeleteAlert)
