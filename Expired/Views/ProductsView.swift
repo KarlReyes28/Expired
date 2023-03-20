@@ -12,7 +12,7 @@ struct ProductsView: View {
     @EnvironmentObject var productStore: ProductStore
     @EnvironmentObject var notificationViewModel: NotificationViewModel
 
-    @Binding var products: [Product]
+    var products: [Product]
     @State private var selectedFilter: ProductFilter = .All
     @State private var showingDeleteAlert = false
     @State private var deleteIndexSet: IndexSet?
@@ -113,7 +113,7 @@ struct ProductsView: View {
 
 struct ProductsView_Previews: PreviewProvider {
     static var previews: some View {
-        ProductsView(products: .constant(ProductStore(PersistenceController.preview.container.viewContext).products))
+        ProductsView(products: ProductStore(PersistenceController.preview.container.viewContext).products)
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
             .environmentObject(ProductStore(PersistenceController.preview.container.viewContext))
             .environmentObject(NotificationViewModel())
