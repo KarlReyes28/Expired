@@ -11,7 +11,7 @@ struct ArchivedProductsView: View {
     @EnvironmentObject var productStore: ProductStore
 
     var body: some View {
-        ProductsView(products: $productStore.archivedProducts, emptyPlaceholderText: "No archived product")
+        ProductsView(products: productStore.archivedProducts, emptyPlaceholderText: "No archived product")
             .navigationTitle("Archived products")
     }
 }

@@ -16,7 +16,7 @@ struct HomeView: View {
 
     var body: some View {
         NavigationView {
-            ProductsView(products: $productStore.unarchivedProducts, showFilter: true)
+            ProductsView(products: filteredCategoryProducts, showFilter: true)
                 .navigationTitle("Products")
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
@@ -38,6 +38,15 @@ struct HomeView: View {
                 }
         }
     }
+    
+    private var filteredCategoryProducts: [Product] {
+        if selectedCategory != nil {
+            return productStore.unarchivedProducts.filter({$0.category?.id == selectedCategory?.id})
+        } else {
+            return productStore.unarchivedProducts
+        }
+    }
+    
 }
 
 struct HomeView_Previews: PreviewProvider {
