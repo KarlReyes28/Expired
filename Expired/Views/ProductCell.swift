@@ -14,6 +14,7 @@ struct ProductCell: View {
     var body: some View {
         HStack {
             ProductImage(data: product.image, size: .small)
+                .padding(.trailing, 5)
             VStack(alignment: .leading) {
                 HStack {
                     Text(product.title ?? "")

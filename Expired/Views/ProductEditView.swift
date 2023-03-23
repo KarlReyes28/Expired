@@ -45,14 +45,25 @@ struct ProductEditView: View {
 
     var body: some View {
         VStack {
-            VStack {
-                ProductImage(image: image, size: .large)
-                    .onTapGesture {
-                        showingPhotoAction.toggle()
-                    }
-            }
-            .padding(.vertical, 10)
             List {
+                Section {
+                    HStack {
+                        Spacer()
+                        ProductImage(image: image, size: .large)
+                            .overlay(alignment: .bottomTrailing) {
+                                Image(systemName: "pencil.circle.fill")
+                                    .symbolRenderingMode(.multicolor)
+                                    .foregroundColor(.accentColor)
+                                    .font(.system(size: 30))
+                                    .offset(x: 10, y: 10)
+                                    .onTapGesture {
+                                        showingPhotoAction.toggle()
+                                    }
+                            }
+                        Spacer()
+                    }
+                    .padding(.vertical, 20)
+                }
                 Section(header: Text("Product Info")) {
                     HStack {
                         Image(systemName: "pencil")

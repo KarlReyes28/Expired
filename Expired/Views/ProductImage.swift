@@ -11,45 +11,53 @@ enum ImageSize {
     case small
     case medium
     case large
+    case ultraLarge
 }
 
 struct ProductImage: View {
     var image: UIImage? = nil
     var data: Data? = nil
-    var size: ImageSize = .large
+    var size: ImageSize = .medium
 
     var width: CGFloat {
-        var width = 40.0
+        var width = 50.0
         switch size {
             case .small:
-                width = 60.0
+                width = 50.0
             case .medium:
-                width = 120.0
+                width = 100.0
             case .large:
-                width = 180.0
+                width = 150.0
+            case .ultraLarge:
+                width = 250.0
         }
 
         return width
     }
     
-    var displayImage: UIImage {
+    var displayImage: UIImage? {
         if let image = image {
             return image
         } else if let data = data {
             return UIImage(data: data)!
         }
 
-        return UIImage()
+        return nil
     }
 
     var body: some View {
-        Image(uiImage: displayImage)
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .frame(width: width, height: width, alignment: .center)
-            .background(Color.black.opacity(0.2))
-            .clipShape(RoundedRectangle(cornerRadius: 4.0))
-            .clipped()
+        if displayImage != nil {
+            Image(uiImage: displayImage!)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: width, height: width, alignment: .center)
+                .clipShape(RoundedRectangle(cornerRadius: 4.0))
+                .clipped()
+        } else {
+            Image(systemName: "photo")
+                .font(.system(size: width / 1.18))
+                .frame(width: width, height: width, alignment: .center)
+        }
     }
 }
 

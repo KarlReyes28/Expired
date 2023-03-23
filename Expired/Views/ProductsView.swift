@@ -53,6 +53,10 @@ struct ProductsView: View {
                 Spacer()
                 Text(productStore.selectedProduct?.title ?? "")
                     .font(.title)
+                if productStore.selectedProduct != nil && productStore.selectedProduct!.image != nil {
+                    ProductImage(data: productStore.selectedProduct!.image, size: .ultraLarge)
+                        .padding(.vertical, 12)
+                }
                 Text(productStore.selectedProduct?.memo ?? "")
                     .padding(.top, 2)
                 Spacer()
