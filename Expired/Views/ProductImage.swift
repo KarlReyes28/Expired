@@ -45,10 +45,11 @@ struct ProductImage: View {
     var body: some View {
         Image(uiImage: displayImage)
             .resizable()
+            .aspectRatio(contentMode: .fill)
+            .frame(width: width, height: width, alignment: .center)
             .background(Color.black.opacity(0.2))
-            .aspectRatio(contentMode: .fit)
-            .clipShape(RoundedRectangle(cornerRadius: 5.0))
-            .frame(width: width, height: width)
+            .clipShape(RoundedRectangle(cornerRadius: 4.0))
+            .clipped()
     }
 }
 
