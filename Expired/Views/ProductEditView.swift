@@ -107,9 +107,9 @@ struct ProductEditView: View {
                 .disabled(title.isEmpty)
             }
         }
-        .confirmationDialog("Update picture", isPresented: $showingPhotoAction, titleVisibility: .hidden) {
+        .confirmationDialog("", isPresented: $showingPhotoAction, titleVisibility: .hidden) {
             if image != nil {
-                Button("Remove picture", role: .destructive) {
+                Button("Remove photo", role: .destructive) {
                     image = nil
                 }
             }
