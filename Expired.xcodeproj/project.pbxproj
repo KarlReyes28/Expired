@@ -24,6 +24,8 @@
 		DD9C7F8C29837A9F00E672B2 /* ProductEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9C7F8929837A9F00E672B2 /* ProductEditView.swift */; };
 		DD9C7F8D29837A9F00E672B2 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9C7F8A29837A9F00E672B2 /* HomeView.swift */; };
 		DD9C7F8E29837A9F00E672B2 /* ProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9C7F8B29837A9F00E672B2 /* ProductCell.swift */; };
+		DDCFDCE429C8C97B00FFA36D /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDCFDCE329C8C97B00FFA36D /* ImagePicker.swift */; };
+		DDF6DCF629CBDFFE00C65241 /* ProductImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF6DCF529CBDFFE00C65241 /* ProductImage.swift */; };
 		DDFED09A2999B75900DBBAA6 /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFED0992999B75800DBBAA6 /* NotificationViewModel.swift */; };
 		DDFED09C2999D85A00DBBAA6 /* NotificationCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFED09B2999D85A00DBBAA6 /* NotificationCategory.swift */; };
 /* End PBXBuildFile section */
@@ -47,6 +49,8 @@
 		DD9C7F8929837A9F00E672B2 /* ProductEditView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductEditView.swift; sourceTree = "<group>"; };
 		DD9C7F8A29837A9F00E672B2 /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		DD9C7F8B29837A9F00E672B2 /* ProductCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductCell.swift; sourceTree = "<group>"; };
+		DDCFDCE329C8C97B00FFA36D /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		DDF6DCF529CBDFFE00C65241 /* ProductImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImage.swift; sourceTree = "<group>"; };
 		DDFED0992999B75800DBBAA6 /* NotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewModel.swift; sourceTree = "<group>"; };
 		DDFED09B2999D85A00DBBAA6 /* NotificationCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCategory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -110,6 +114,8 @@
 				8E951EC8299AC1BC003D9F7C /* ProductsView.swift */,
 				DD8740AA29B7F78900A747D1 /* CategoriesView.swift */,
 				DD7A8D6829B842BC001DEE0F /* CategoryEditView.swift */,
+				DDF6DCF529CBDFFE00C65241 /* ProductImage.swift */,
+				DDCFDCE329C8C97B00FFA36D /* ImagePicker.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -201,6 +207,7 @@
 				DD8740AB29B7F78900A747D1 /* CategoriesView.swift in Sources */,
 				DD9C7F8E29837A9F00E672B2 /* ProductCell.swift in Sources */,
 				66AF6493298C260F00456759 /* ProductFilter.swift in Sources */,
+				DDCFDCE429C8C97B00FFA36D /* ImagePicker.swift in Sources */,
 				DD9C7F7929837A2000E672B2 /* Expired.xcdatamodeld in Sources */,
 				DD9C7F8C29837A9F00E672B2 /* ProductEditView.swift in Sources */,
 				DD9C7F8D29837A9F00E672B2 /* HomeView.swift in Sources */,
@@ -214,6 +221,7 @@
 				DD7A8D6929B842BC001DEE0F /* CategoryEditView.swift in Sources */,
 				DD9C7F8729837A8400E672B2 /* ProductStore.swift in Sources */,
 				8E951EC7299ABC7E003D9F7C /* ArchivedProductsView.swift in Sources */,
+				DDF6DCF629CBDFFE00C65241 /* ProductImage.swift in Sources */,
 				661713392991D4B200AF0A06 /* SettingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -348,8 +356,10 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = C9J7PU23JR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Expired/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Expired?";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Camera permission will be required to take photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -387,8 +397,10 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = C9J7PU23JR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Expired/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Expired?";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Camera permission will be required to take photos";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

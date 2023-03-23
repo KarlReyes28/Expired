@@ -13,6 +13,7 @@ struct ProductCell: View {
 
     var body: some View {
         HStack {
+            ProductImage(data: product.image, size: .small)
             VStack(alignment: .leading) {
                 HStack {
                     Text(product.title ?? "")
