@@ -43,6 +43,11 @@ struct SettingView: View {
                         }
                     }
                 }
+                Section(header: Text("User Configurations")){
+                    NavigationLink(destination: ExpiringSoonView() ) {
+                        Text("Customize expiring soon days")
+                    }
+                }
                 Section(header: Text("Data Management")) {
                     Group {
                         Button("Delete all data") {

@@ -106,6 +106,10 @@ class NotificationViewModel: ObservableObject {
         // Schedule the expired notification
         scheduleProductNotification(context, product: product, notificationCategory: .Expired)
     }
+    
+    func rescheduleNotifications(_ context: NSManagedObjectContext) {
+        
+    }
 
     // Cancel notifications by conditions:
     // Step #1: Request Canceling scheduled notifications from the system

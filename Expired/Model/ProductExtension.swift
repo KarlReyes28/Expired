@@ -25,10 +25,15 @@ extension Product {
     var isGood: Bool {
         return !(isExpired || isExpiringSoon)
     }
+    
+    var dynamicDateExpiringSoon: Int?{
+        @AppStorage("notifyExpirySoonDate") var days = 0
+        return (-days)
+    }
 
     var expiringSoonDate: Date? {
         if let date = expiryDate {
-            return Calendar.current.date(byAdding: .day, value: -2, to: date)
+            return Calendar.current.date(byAdding: .day, value: dynamicDateExpiringSoon ?? 2, to: date)
         }
         
         return nil
