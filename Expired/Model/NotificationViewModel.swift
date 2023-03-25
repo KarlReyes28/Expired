@@ -23,7 +23,7 @@ import CoreData
 
 class NotificationViewModel: ObservableObject {
     @Published var authorizationStatusDetermined: Bool = false
-
+    @AppStorage("notifyExpirySoonDate") var days:Int = 2
     init() {
         updateAuthorizationStatus()
     }
@@ -134,17 +134,19 @@ class NotificationViewModel: ObservableObject {
         product.removeFromNotifications(product.notifications!)
         save(context)
     }
-
     // Schedule a notification of a given product and its notification category (expiring-soon | expired)
     private func scheduleProductNotification(_ context: NSManagedObjectContext, product: Product, notificationCategory: NotificationCategory) {
         Task {
             var notificationDate: Date?
             var notificationContent: String = ""
+            let converter = NumberFormatter()
+            converter.numberStyle = .spellOut
+            let numberString:String! = converter.string(from: NSNumber(value: days))
             
             switch notificationCategory {
                 case .ExpiringSoon:
                     notificationDate = product.expiringSoonDate
-                    notificationContent = "Expiring in two days"
+                    notificationContent = "Expiring in \(numberString!) days"
                 case .Expired:
                     notificationDate = product.expiryDate
                     notificationContent = "Expired"

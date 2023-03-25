@@ -27,7 +27,7 @@ extension Product {
     }
     
     var dynamicDateExpiringSoon: Int?{
-        @AppStorage("notifyExpirySoonDate") var days = 0
+        @AppStorage("notifyExpirySoonDate") var days = 2
         return (-days)
     }
 
