@@ -21,6 +21,10 @@ struct ProductEditView: View {
     @State private var category: Category?
     @State private var memo: String
     @State private var expiryDate: Date
+    @State private var image: UIImage?
+    @State private var showingPhotoLibrary: Bool = false
+    @State private var showingPhotoAction: Bool = false
+    @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
 
     init(product: Product?) {
         if let selectedProduct = product {
@@ -29,47 +33,69 @@ struct ProductEditView: View {
             _memo = State(initialValue: selectedProduct.memo ?? "")
             _category = State(initialValue: selectedProduct.category)
             _expiryDate = State(initialValue: selectedProduct.expiryDate ?? DEFAULT_EXPIRY_DATE)
+            _image = State(initialValue: selectedProduct.image != nil ? UIImage(data: selectedProduct.image!) : nil)
         } else {
             _title = State(initialValue: "")
             _memo = State(initialValue: "")
             _category = State(initialValue: nil)
             _expiryDate = State(initialValue: DEFAULT_EXPIRY_DATE)
+            _image = State(initialValue: nil)
         }
     }
 
     var body: some View {
-        List {
-            Section(header: Text("Product Info")) {
-                HStack {
-                    Image(systemName: "pencil")
-                    TextField("Title", text: $title)
+        VStack {
+            List {
+                Section {
+                    HStack {
+                        Spacer()
+                        ProductImage(image: image, size: .large)
+                            .overlay(alignment: .bottomTrailing) {
+                                Image(systemName: "pencil.circle.fill")
+                                    .symbolRenderingMode(.multicolor)
+                                    .foregroundColor(.accentColor)
+                                    .font(.system(size: 30))
+                                    .offset(x: 10, y: 10)
+                                    .onTapGesture {
+                                        showingPhotoAction.toggle()
+                                    }
+                            }
+                        Spacer()
+                    }
+                    .padding(.vertical, 20)
                 }
-                HStack {
-                    Image(systemName: "note.text")
-                    TextField("Memo", text: $memo)
+                Section(header: Text("Product Info")) {
+                    HStack {
+                        Image(systemName: "pencil")
+                        TextField("Title", text: $title)
+                    }
+                    HStack {
+                        Image(systemName: "note.text")
+                        TextField("Memo", text: $memo)
+                    }
                 }
-            }
-            
-            Section(header: Text("Category")) {
-                HStack {
-                    Image(systemName: "tray.fill")
-                    Picker("Category", selection: $category) {
-                        Text("None").tag(Category?(nil))
-                        ForEach(productStore.categories) { category in
-                            Text(category.title ?? "Unknown").tag(category as Category?)
+
+                Section(header: Text("Category")) {
+                    HStack {
+                        Image(systemName: "tray.fill")
+                        Picker("Category", selection: $category) {
+                            Text("None").tag(Category?(nil))
+                            ForEach(productStore.categories) { category in
+                                Text(category.title ?? "Unknown").tag(category as Category?)
+                            }
                         }
                     }
                 }
-            }
-            
-            Section(header: Text("Expiry Date")) {
-                HStack {
-                    Image(systemName: "hourglass.tophalf.fill")
-                    DatePicker("Expiries At", selection: $expiryDate, displayedComponents: [.date, .hourAndMinute])
+
+                Section(header: Text("Expiry Date")) {
+                    HStack {
+                        Image(systemName: "hourglass.tophalf.fill")
+                        DatePicker("Expiries At", selection: $expiryDate, displayedComponents: [.date, .hourAndMinute])
+                    }
                 }
             }
+            .listStyle(GroupedListStyle())
         }
-        .listStyle(GroupedListStyle())
         .navigationTitle(navTitle)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -81,8 +107,28 @@ struct ProductEditView: View {
                 .disabled(title.isEmpty)
             }
         }
+        .confirmationDialog("", isPresented: $showingPhotoAction, titleVisibility: .hidden) {
+            if image != nil {
+                Button("Remove photo", role: .destructive) {
+                    image = nil
+                }
+            }
+            
+            Button("Select from photo library") {
+                sourceType = .photoLibrary
+                showingPhotoLibrary.toggle()
+            }
+            
+            Button("Take a photo") {
+                sourceType = .camera
+                showingPhotoLibrary.toggle()
+            }
+        }
+        .sheet(isPresented: $showingPhotoLibrary) {
+            ImagePicker(image: $image, sourceType: sourceType)
+        }
     }
-    
+
     private var navTitle: String {
         return selectedProduct?.title ?? "Add Product"
     }
@@ -97,8 +143,6 @@ struct ProductEditView: View {
             if selectedProduct == nil {
                 updatedProduct = Product(context: viewContext)
                 updatedProduct.id = UUID()
-                updatedProduct.category = nil
-                updatedProduct.image = nil
                 updatedProduct.archived = false
                 updatedProduct.createdAt = now
             } else {
@@ -112,6 +156,7 @@ struct ProductEditView: View {
             }
 
             updatedProduct.category = category
+            updatedProduct.image = image != nil ? image!.jpegData(compressionQuality: 0.3) : nil
             updatedProduct.title = title
             updatedProduct.expiryDate = expiryDate
             updatedProduct.memo = memo
