@@ -56,7 +56,7 @@ struct ProductImage: View {
         } else {
             Image(systemName: "photo")
                 .font(.system(size: width / 1.18))
-                .frame(width: width, height: width, alignment: .center)
+                .frame(width: width, alignment: .center)
         }
     }
 }
