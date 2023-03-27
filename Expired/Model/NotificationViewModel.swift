@@ -21,8 +21,13 @@
 import SwiftUI
 import CoreData
 
+let APP_STORAGE_KEY_NOTIFY_EXPIRING_SOON_DAYS: String = "notifyExpiringSoonDays"
+let DEFAULT_NOTIFY_EXPIRING_SOON_DAYS: Int = 2
+
 class NotificationViewModel: ObservableObject {
     @Published var authorizationStatusDetermined: Bool = false
+    @AppStorage(APP_STORAGE_KEY_NOTIFY_EXPIRING_SOON_DAYS) var expiringSoonDays: Int = DEFAULT_NOTIFY_EXPIRING_SOON_DAYS
+
     init() {
         updateAuthorizationStatus()
     }
@@ -135,19 +140,19 @@ class NotificationViewModel: ObservableObject {
         Task {
             var notificationDate: Date?
             var notificationContent: String = ""
-            let converter = NumberFormatter()
-            converter.numberStyle = .spellOut
-            let vm = NotificationPreferenceViewModel()
-            @AppStorage(vm.APP_STORAGE_KEY_NOTIFY_EXPIRING_SOON_DAYS) var days: Int = vm.DEFAULT_NOTIFY_EXPIRING_SOON_DAYS
             switch notificationCategory {
-            case .ExpiringSoon:
-                notificationDate = product.expiringSoonDate
-                if let numberString = converter.string(from: NSNumber(value: days)) {
-                    notificationContent = "Expiring in \(numberString) \(days > 1 ? "days" : "day")"
-                }
-            case .Expired:
-                notificationDate = product.expiryDate
-                notificationContent = "Expired"
+                case .ExpiringSoon:
+                    notificationDate = product.expiringSoonDate
+                    var displayedDays = "\(expiringSoonDays)"
+                    let converter = NumberFormatter()
+                    converter.numberStyle = .spellOut
+                    if let numberString = converter.string(from: NSNumber(value: expiringSoonDays)) {
+                        displayedDays = numberString
+                    }
+                    notificationContent = "Expiring in \(displayedDays) \(expiringSoonDays > 1 ? "days" : "day")"
+                case .Expired:
+                    notificationDate = product.expiryDate
+                    notificationContent = "Expired"
             }
             
             guard let notificationDate = notificationDate else { return }

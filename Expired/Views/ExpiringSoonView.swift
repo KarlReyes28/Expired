@@ -8,15 +8,14 @@
 import SwiftUI
 
 struct ExpiringSoonView: View {
-    
+
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @EnvironmentObject var productStore: ProductStore
     @EnvironmentObject var notificationVM: NotificationViewModel
-    @EnvironmentObject var notificationPreferenceVM: NotificationPreferenceViewModel
-    @State private var stepperValue = 2
-    @AppStorage("notifyExpiringSoonDays") var notifydays: Int = 2
-    
+    @AppStorage(APP_STORAGE_KEY_NOTIFY_EXPIRING_SOON_DAYS) var expiringSoonDays: Int = DEFAULT_NOTIFY_EXPIRING_SOON_DAYS
+    @State private var stepperValue: Int = DEFAULT_NOTIFY_EXPIRING_SOON_DAYS
+
     var body: some View {
         VStack {
             Text("\(stepperValue)")
@@ -25,17 +24,11 @@ struct ExpiringSoonView: View {
             Stepper("How many days would you like to be reminded of your product when it is going to be expired?", value: $stepperValue, in: 1...7)
                 .padding()
         }
-        .onAppear {
-            if notifydays != 2 {
-                stepperValue = notifydays
-            }
-        }
         .navigationTitle("Notification Preference")
         .toolbar{
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Save") {
-                    print(notifydays)
-                    notifydays = stepperValue
+                    expiringSoonDays = stepperValue
                     for product in products {
                         notificationVM.updateProductNotifications(viewContext, product: product)
                     }
@@ -43,12 +36,15 @@ struct ExpiringSoonView: View {
                 }
             }
         }
+        .onAppear() {
+            stepperValue = expiringSoonDays
+        }
     }
+
     private var products: [Product] {
         return productStore.unarchivedProducts
     }
 }
-
 
 struct ExpiringSoonView_Previews: PreviewProvider {
     static var previews: some View {

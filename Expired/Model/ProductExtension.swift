@@ -27,11 +27,10 @@ extension Product {
     }
     
     var expiringSoonDate: Date? {
-        let vm = NotificationPreferenceViewModel()
-        @AppStorage(vm.APP_STORAGE_KEY_NOTIFY_EXPIRING_SOON_DAYS) var days: Int = vm.DEFAULT_NOTIFY_EXPIRING_SOON_DAYS
-        
+        @AppStorage(APP_STORAGE_KEY_NOTIFY_EXPIRING_SOON_DAYS) var expiringSoonDays: Int = DEFAULT_NOTIFY_EXPIRING_SOON_DAYS
+
         if let date = expiryDate {
-            return Calendar.current.date(byAdding: .day, value: -days, to: date)
+            return Calendar.current.date(byAdding: .day, value: -expiringSoonDays, to: date)
         }
         
         return nil
