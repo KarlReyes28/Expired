@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension Product {
-    
+
     var isExpired: Bool {
         if let date = expiryDate {
             return date < Date()
@@ -26,14 +26,12 @@ extension Product {
         return !(isExpired || isExpiringSoon)
     }
     
-    var dynamicDateExpiringSoon: Int?{
-        @AppStorage("notifyExpirySoonDate") var days = 2
-        return (-days)
-    }
-
     var expiringSoonDate: Date? {
+        let vm = NotificationPreferenceViewModel()
+        @AppStorage(vm.APP_STORAGE_KEY_NOTIFY_EXPIRING_SOON_DAYS) var days: Int = vm.DEFAULT_NOTIFY_EXPIRING_SOON_DAYS
+        
         if let date = expiryDate {
-            return Calendar.current.date(byAdding: .day, value: dynamicDateExpiringSoon ?? 2, to: date)
+            return Calendar.current.date(byAdding: .day, value: -days, to: date)
         }
         
         return nil

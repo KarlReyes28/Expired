@@ -8,24 +8,34 @@
 import SwiftUI
 
 struct ExpiringSoonView: View {
-    //    @State private var days  = 2
-    @EnvironmentObject var productStore: ProductStore
+    
     @Environment(\.managedObjectContext) private var viewContext
-    @AppStorage("notifyExpirySoonDate") private var days = 2
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @EnvironmentObject var productStore: ProductStore
     @EnvironmentObject var notificationVM: NotificationViewModel
+    @EnvironmentObject var notificationPreferenceVM: NotificationPreferenceViewModel
+    @State private var stepperValue = 2
+    @AppStorage("notifyExpiringSoonDays") var notifydays: Int = 2
     
     var body: some View {
         VStack {
-            Text("\(days)")
-                .font(.system(size:45, weight:.bold, design: .rounded))
-            Stepper("How many days would you like to be reminded of your product when it is going to be expired?", value: $days, in: 2...7)
+            Text("\(stepperValue)")
+                .font(.system(size: 45, weight: .bold, design: .rounded))
+                .padding()
+            Stepper("How many days would you like to be reminded of your product when it is going to be expired?", value: $stepperValue, in: 1...7)
+                .padding()
+        }
+        .onAppear {
+            if notifydays != 2 {
+                stepperValue = notifydays
+            }
         }
         .navigationTitle("Notification Preference")
         .toolbar{
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Save") {
-                    UserDefaults.standard.set(days, forKey: "notifyExpirySoonDate" )
+                    print(notifydays)
+                    notifydays = stepperValue
                     for product in products {
                         notificationVM.updateProductNotifications(viewContext, product: product)
                     }
@@ -35,17 +45,15 @@ struct ExpiringSoonView: View {
         }
     }
     private var products: [Product] {
-        
         return productStore.unarchivedProducts
-        
     }
 }
+
 
 struct ExpiringSoonView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             ExpiringSoonView()
         }
-        
     }
 }

@@ -6,43 +6,42 @@
 //
 
 /*
-
+ 
  Case #1: Deleting products - Cancel notifications
-    Request canceling scheduled notifications (expiring-soon | expired)
-    ***************************************************** -> Delete notifications from Core Data
-
+ Request canceling scheduled notifications (expiring-soon | expired)
+ ***************************************************** -> Delete notifications from Core Data
+ 
  Case #2: Creating/Updating products - Update notifications
-    Repeat steps in Case #1
-    *********************** -> Schedule notifications (expiring-soon | expired)
-    ************************************************************************ -> Save notifications to Core Data
-
-*/
+ Repeat steps in Case #1
+ *********************** -> Schedule notifications (expiring-soon | expired)
+ ************************************************************************ -> Save notifications to Core Data
+ 
+ */
 
 import SwiftUI
 import CoreData
 
 class NotificationViewModel: ObservableObject {
     @Published var authorizationStatusDetermined: Bool = false
-    @AppStorage("notifyExpirySoonDate") var days:Int = 2
     init() {
         updateAuthorizationStatus()
     }
-
+    
     func updateAuthorizationStatus() {
         UNUserNotificationCenter.current().getNotificationSettings(completionHandler: { permission in
             var determined = false
             switch permission.authorizationStatus  {
-                case .authorized, .denied, .provisional, .ephemeral:
-                    determined = true
-                case .notDetermined:
-                    determined = false
-                default:
-                    determined = false
+            case .authorized, .denied, .provisional, .ephemeral:
+                determined = true
+            case .notDetermined:
+                determined = false
+            default:
+                determined = false
             }
-
+            
             DispatchQueue.main.async {
                 self.authorizationStatusDetermined = determined
-
+                
                 // Request permission if authorizationStatus is undetermined
                 if !self.authorizationStatusDetermined {
                     self.requestPermission()
@@ -50,7 +49,7 @@ class NotificationViewModel: ObservableObject {
             }
         })
     }
-
+    
     func requestPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
             if success {
@@ -60,7 +59,7 @@ class NotificationViewModel: ObservableObject {
             }
         }
     }
-
+    
     // Fetch notifications by conditions
     func fetchNotifications(_ context: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor]? = nil, predicate: NSPredicate? = nil) -> [LocalNotification] {
         do {
@@ -72,17 +71,17 @@ class NotificationViewModel: ObservableObject {
             let error = error
             print("------ Fetch notifications error: \(error.localizedDescription)")
         }
-
+        
         return []
     }
-
+    
     // Delete notifications by conditions
     func deleteNotifications(_ context: NSManagedObjectContext, predicate: NSPredicate? = nil) -> Bool {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "LocalNotification")
         fetchRequest.predicate = predicate
         let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         var result = true
-
+        
         do {
             try context.execute(batchDeleteRequest)
             print("------ Notifications deleted: \(String(describing: predicate))")
@@ -94,23 +93,19 @@ class NotificationViewModel: ObservableObject {
         
         return result
     }
-
+    
     // Update a product's notifications (expiring-soon | expired)
     func updateProductNotifications(_ context: NSManagedObjectContext, product: Product) {
         // Cancel notifications if applicable
         cancelProductNotifications(context, product: product)
-
+        
         // Schedule the expiring-soon notification
         scheduleProductNotification(context, product: product, notificationCategory: .ExpiringSoon)
-
+        
         // Schedule the expired notification
         scheduleProductNotification(context, product: product, notificationCategory: .Expired)
     }
     
-    func rescheduleNotifications(_ context: NSManagedObjectContext) {
-        
-    }
-
     // Cancel notifications by conditions:
     // Step #1: Request Canceling scheduled notifications from the system
     // Step #2: Delete associated notifications from Core Data
@@ -121,7 +116,7 @@ class NotificationViewModel: ObservableObject {
         cancelScheduledNotificationRequests(uuids: notificationRequestIds)
         return deleteNotifications(context, predicate: predicate)
     }
-
+    
     // Cancel a product's notifications (expiring-soon | expired)
     // Then delete notifications belong to the product via Core Data relationships
     func cancelProductNotifications(_ context: NSManagedObjectContext, product: Product) {
@@ -134,6 +129,7 @@ class NotificationViewModel: ObservableObject {
         product.removeFromNotifications(product.notifications!)
         save(context)
     }
+    
     // Schedule a notification of a given product and its notification category (expiring-soon | expired)
     private func scheduleProductNotification(_ context: NSManagedObjectContext, product: Product, notificationCategory: NotificationCategory) {
         Task {
@@ -141,17 +137,19 @@ class NotificationViewModel: ObservableObject {
             var notificationContent: String = ""
             let converter = NumberFormatter()
             converter.numberStyle = .spellOut
-            let numberString:String! = converter.string(from: NSNumber(value: days))
-            
+            let vm = NotificationPreferenceViewModel()
+            @AppStorage(vm.APP_STORAGE_KEY_NOTIFY_EXPIRING_SOON_DAYS) var days: Int = vm.DEFAULT_NOTIFY_EXPIRING_SOON_DAYS
             switch notificationCategory {
-                case .ExpiringSoon:
-                    notificationDate = product.expiringSoonDate
-                    notificationContent = "Expiring in \(numberString!) days"
-                case .Expired:
-                    notificationDate = product.expiryDate
-                    notificationContent = "Expired"
+            case .ExpiringSoon:
+                notificationDate = product.expiringSoonDate
+                if let numberString = converter.string(from: NSNumber(value: days)) {
+                    notificationContent = "Expiring in \(numberString) \(days > 1 ? "days" : "day")"
+                }
+            case .Expired:
+                notificationDate = product.expiryDate
+                notificationContent = "Expired"
             }
-
+            
             guard let notificationDate = notificationDate else { return }
             guard let notificationRequestId = await scheduleNotificationRequest(title: product.title!, body: notificationContent, date: notificationDate) else { return }
             
@@ -170,22 +168,22 @@ class NotificationViewModel: ObservableObject {
             }
         }
     }
-
+    
     // Schedule a notification request to the system
     private func scheduleNotificationRequest(title: String, body: String, date: Date) async -> UUID? {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
         content.sound = .default
-
+        
         let calendar = Calendar.current
         let dateComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date)
-
+        
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-
+        
         let uuid = UUID()
         let request = UNNotificationRequest(identifier: uuid.uuidString, content: content, trigger: trigger)
-
+        
         let notificationCenter = UNUserNotificationCenter.current()
         do {
             try await notificationCenter.add(request)
@@ -197,7 +195,7 @@ class NotificationViewModel: ObservableObject {
             return nil
         }
     }
-
+    
     // Request canceling scheduled notifications from the system
     private func cancelScheduledNotificationRequests(uuids: [UUID]) {
         let uuidStrings = uuids.map { $0.uuidString }
@@ -205,13 +203,13 @@ class NotificationViewModel: ObservableObject {
         notificationCenter.removePendingNotificationRequests(withIdentifiers: uuidStrings)
         print("------ Notifications canceled: \(uuids)")
     }
-
+    
     // Fetch notifications by product
     private func fetchProductNotifications(_ context: NSManagedObjectContext, product: Product) -> [LocalNotification] {
         let predicate = NSPredicate(format: "%K == %@", "product", product.id! as CVarArg)
         return fetchNotifications(context, sortDescriptors: nil, predicate: predicate)
     }
-
+    
     private func save(_ context: NSManagedObjectContext) {
         if context.hasChanges {
             do {
