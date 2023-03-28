@@ -11,7 +11,7 @@ struct ProductsView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var productStore: ProductStore
     @EnvironmentObject var notificationViewModel: NotificationViewModel
-
+    
     var products: [Product]
     @State private var selectedFilter: ProductFilter = .All
     @State private var showingDeleteAlert = false
@@ -19,7 +19,7 @@ struct ProductsView: View {
     
     var showFilter: Bool = false
     var emptyPlaceholderText: String = "No product found\nPress + to add your first product!"
-
+    
     var body: some View {
         List {
             // Move filter picker here to avoid changing the UI
@@ -38,6 +38,30 @@ struct ProductsView: View {
                 }
             }
             .onDelete(perform: showDeleteAlert)
+            if showFilter {
+                VStack{
+                    HStack (alignment: .center, spacing: 50){
+                        if(selectedFilter == .All || selectedFilter == .Expired) {
+                            VStack{
+                                Text(ProductStatus.Expired.rawValue)
+                                Text("\(expiredProductsCount)")
+                            }
+                        }
+                        if(selectedFilter == .All || selectedFilter == .ExpiringSoon) {
+                            VStack{
+                                Text(ProductStatus.ExpiringSoon.rawValue)
+                                Text("\(almostExpiredProductsCount)")
+                            }
+                        }
+                        if(selectedFilter == .All || selectedFilter == .Good) {
+                            VStack{
+                                Text(ProductStatus.Good.rawValue)
+                                Text("\(goodProductsCount)")
+                            }
+                        }
+                    }
+                }.frame(maxWidth: .infinity)
+            }
         }
         .listStyle(GroupedListStyle())
         .overlay(Group {
@@ -75,29 +99,48 @@ struct ProductsView: View {
             }
         }
     }
-
+    
+    var expiredProductsCount: Int{
+        return products.filter{
+            filterProduct($0, .Expired)
+        }.count
+    }
+    
+    var almostExpiredProductsCount: Int{
+        return products.filter{
+            filterProduct($0, .ExpiringSoon)
+        }.count
+    }
+    
+    var goodProductsCount: Int{
+        return products.filter{
+            filterProduct($0, .Good)
+        }.count
+    }
+    
     var filteredProducts: [Product] {
         switch selectedFilter {
-            case .All:
-                return products
-            case .Expired, .ExpiringSoon, .Good:
-                return products.filter{ filterProduct($0, selectedFilter) }
+        case .All:
+            return products
+        case .Expired, .ExpiringSoon, .Good:
+            return products.filter{ filterProduct($0, selectedFilter)
+            }
         }
     }
-
+    
     private func filterProduct(_ product: Product, _ selectedFilter: ProductFilter) -> Bool {
         switch selectedFilter {
-            case .All:
-                return true
-            case .Expired:
-                return product.isExpired
-            case .ExpiringSoon:
-                return product.isExpiringSoon
-            case .Good:
-                return product.isGood
+        case .All:
+            return true
+        case .Expired:
+            return product.isExpired
+        case .ExpiringSoon:
+            return product.isExpiringSoon
+        case .Good:
+            return product.isGood
         }
     }
-
+    
     private func deleteProducts(indexSet: IndexSet){
         withAnimation {
             indexSet.map{products[$0]}.forEach { product in
@@ -107,7 +150,7 @@ struct ProductsView: View {
             productStore.save(viewContext)
         }
     }
-
+    
     private func showDeleteAlert(indexSet: IndexSet) {
         // Update both properties for later actions
         deleteIndexSet = indexSet
