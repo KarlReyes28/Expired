@@ -38,34 +38,30 @@ struct ProductsView: View {
                 }
             }
             .onDelete(perform: showDeleteAlert)
-            VStack{
-                Spacer()
-                if(selectedFilter == .All) {
-                    Text("Total: \(products.count)")
-                        .font(.headline)
-                    Spacer()
-                }
-                HStack (alignment: .center, spacing: 50){
-                    if(selectedFilter == .All || selectedFilter == .Expired) {
-                        VStack{
-                            Text("Expired")
-                            Text("\(expiredProductsCount)")
+            if showFilter {
+                VStack{
+                    HStack (alignment: .center, spacing: 50){
+                        if(selectedFilter == .All || selectedFilter == .Expired) {
+                            VStack{
+                                Text(ProductStatus.Expired.rawValue)
+                                Text("\(expiredProductsCount)")
+                            }
+                        }
+                        if(selectedFilter == .All || selectedFilter == .ExpiringSoon) {
+                            VStack{
+                                Text(ProductStatus.ExpiringSoon.rawValue)
+                                Text("\(almostExpiredProductsCount)")
+                            }
+                        }
+                        if(selectedFilter == .All || selectedFilter == .Good) {
+                            VStack{
+                                Text(ProductStatus.Good.rawValue)
+                                Text("\(goodProductsCount)")
+                            }
                         }
                     }
-                    if(selectedFilter == .All || selectedFilter == .ExpiringSoon) {
-                        VStack{
-                            Text("Expiring Soon")
-                            Text("\(almostExpiredProductsCount)")
-                        }
-                    }
-                    if(selectedFilter == .All || selectedFilter == .Good) {
-                        VStack{
-                            Text("Good")
-                            Text("\(goodProductsCount)")
-                        }
-                    }
-                }
-            }.frame(maxWidth: .infinity)
+                }.frame(maxWidth: .infinity)
+            }
         }
         .listStyle(GroupedListStyle())
         .overlay(Group {
