@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+let APP_STORAGE_KEY_STAUS_COLOR_EXPIRED: String = "statusColorExpired"
+let APP_STORAGE_KEY_STAUS_COLOR_EXPIRING_SOON: String = "statusColorExpiringSoon"
+let APP_STORAGE_KEY_STAUS_COLOR_GOOD: String = "statusColorGood"
+
 extension Product {
 
     var isExpired: Bool {
@@ -47,6 +51,7 @@ extension Product {
     }
     
     var statusColor: Color {
+//        @AppStorage(APP_STORAGE_KEY_STAUS_COLOR_EXPIRED) var statusColorExpired: Color = .pink
         switch status {
         case .Expired:
             return .pink

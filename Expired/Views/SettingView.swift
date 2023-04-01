@@ -48,6 +48,11 @@ struct SettingView: View {
                         Text("Customize expiring soon days")
                     }
                 }
+                Section(header: Text("Status Color")){
+                    NavigationLink(destination: StatusColorView() ) {
+                        Text("Customize Status Color")
+                    }
+                }
                 Section(header: Text("Data Management")) {
                     Group {
                         Button("Delete all data") {
