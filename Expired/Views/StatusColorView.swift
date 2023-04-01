@@ -8,70 +8,58 @@
 import SwiftUI
 
 struct StatusColorView: View {
+    @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @AppStorage(APP_STORAGE_KEY_STAUS_COLOR_EXPIRED) var statusColorExpired: String = "red"
-    @AppStorage(APP_STORAGE_KEY_STAUS_COLOR_EXPIRING_SOON) var statusColorExpiringSoon: String = "blue"
-    @AppStorage(APP_STORAGE_KEY_STAUS_COLOR_GOOD) var statusColorGood: String = "green"
-    
-    @State private var localStatusColorExpired: Color = .red
-    @State private var localStatusColorExpiringSoon: Color = .orange
-    @State private var localStatusColorGood: Color = .green
-    
+    @EnvironmentObject var productStore: ProductStore
+    @AppStorage(APP_STORAGE_KEY_STATUS_COLOR_EXPIRED) var statusColorStringExpired: String = DEFAULT_STATUS_COLOR_STRING_EXPIRED
+    @AppStorage(APP_STORAGE_KEY_STATUS_COLOR_EXPIRING_SOON) var statusColorStringExpiringSoon: String = DEFAULT_STATUS_COLOR_STRING_EXPIRING_SOON
+    @AppStorage(APP_STORAGE_KEY_STATUS_COLOR_GOOD) var statusColorStringGood: String = DEFAULT_STATUS_COLOR_STRING_GOOD
+
+    @State private var statusColorExpired: Color = INITIAL_STATUS_COLOR
+    @State private var statusColorExpiringSoon: Color = INITIAL_STATUS_COLOR
+    @State private var statusColorGood: Color = INITIAL_STATUS_COLOR
+
     var body: some View {
-        List{
-            Section(header: Text("Expired")) {
-                ColorPicker("Set the color", selection: $localStatusColorExpired) // COLOR
+        List {
+            ColorPicker(selection: $statusColorExpired) {
+                Text("Expired")
+                    .foregroundColor(statusColorExpired)
             }
-            Section(header: Text("Expiring Soon")) {
-                ColorPicker("Set the color", selection: $localStatusColorExpiringSoon)
+            ColorPicker(selection: $statusColorExpiringSoon) {
+                Text("Expiring Soon")
+                    .foregroundColor(statusColorExpiringSoon)
             }
-            Section(header: Text("Good")) {
-                ColorPicker("Set the color", selection: $localStatusColorGood)
+            ColorPicker(selection: $statusColorGood) {
+                Text("Good")
+                    .foregroundColor(statusColorGood)
             }
         }
         .navigationTitle("Status Color")
         .toolbar{
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("Save") {
-                    statusColorExpired = updateCardColorInAppStorage(color: localStatusColorExpired)
-                    statusColorExpiringSoon = updateCardColorInAppStorage(color: localStatusColorExpiringSoon)
-                    statusColorGood = updateCardColorInAppStorage(color: localStatusColorGood)
+                    statusColorStringExpired = Color.toString(statusColorExpired)
+                    statusColorStringExpiringSoon = Color.toString(statusColorExpiringSoon)
+                    statusColorStringGood = Color.toString(statusColorGood)
+                    
+                    // Force reload the data to apply the color changes
+                    productStore.reloadData(viewContext)
                     self.presentationMode.wrappedValue.dismiss()
                 }
             }
         }
         .onAppear {
-            localStatusColorExpired = stringToColor(color: statusColorExpired)
-            localStatusColorExpiringSoon = stringToColor(color: statusColorExpiringSoon)
-            localStatusColorGood = stringToColor(color: statusColorGood)
+            statusColorExpired = Color.fromString(statusColorStringExpired)
+            statusColorExpiringSoon = Color.fromString(statusColorStringExpiringSoon)
+            statusColorGood = Color.fromString(statusColorStringGood)
         }
     }
-    
-    func updateCardColorInAppStorage(color: Color)-> String {
-        
-        let uiColor = UIColor(color)
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
-        uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
-        
-        return "\(red),\(green),\(blue),\(alpha)"
-    }
-    
-    func stringToColor(color: String) -> Color {
-        var reqColor : Color = .orange
-        if (color != "" ) {
-            let rgbArray = color.components(separatedBy: ",")
-            if let red = Double (rgbArray[0]), let green = Double (rgbArray[1]), let blue = Double(rgbArray[2]), let alpha = Double (rgbArray[3]){ reqColor = Color(.sRGB, red: red, green: green, blue: blue, opacity: alpha)
-            }
-        }
-        return reqColor
-        }
 }
 
 struct StatusColorView_Previews: PreviewProvider {
     static var previews: some View {
-        StatusColorView()
+        NavigationView {
+            StatusColorView()
+        }
     }
 }

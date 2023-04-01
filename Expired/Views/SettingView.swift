@@ -22,6 +22,14 @@ struct SettingView: View {
     var body: some View {
         NavigationView {
             List {
+                Section(header: Text("User Configurations")){
+                    NavigationLink(destination: ExpiringSoonView() ) {
+                        Text("Customize expiring soon days")
+                    }
+                    NavigationLink(destination: StatusColorView() ) {
+                        Text("Customize status color")
+                    }
+                }
                 Section(header: Text("Archive")) {
                     NavigationLink(destination: ArchivedProductsView()) {
                         Text("Archived products")
@@ -41,16 +49,6 @@ struct SettingView: View {
                         Button("OK", role: .cancel) {
                             archiveSuccess = false
                         }
-                    }
-                }
-                Section(header: Text("User Configurations")){
-                    NavigationLink(destination: ExpiringSoonView() ) {
-                        Text("Customize expiring soon days")
-                    }
-                }
-                Section(header: Text("Status Color")){
-                    NavigationLink(destination: StatusColorView() ) {
-                        Text("Customize Status Color")
                     }
                 }
                 Section(header: Text("Data Management")) {
@@ -74,6 +72,9 @@ struct SettingView: View {
                             }
                         }
                     }
+                }
+                Section(header: Text("Version")) {
+                    Text("v0.1.0")
                 }
             }
             .navigationTitle("Settings")

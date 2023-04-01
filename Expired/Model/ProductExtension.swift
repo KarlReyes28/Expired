@@ -7,10 +7,6 @@
 
 import SwiftUI
 
-let APP_STORAGE_KEY_STAUS_COLOR_EXPIRED: String = "statusColorExpired"
-let APP_STORAGE_KEY_STAUS_COLOR_EXPIRING_SOON: String = "statusColorExpiringSoon"
-let APP_STORAGE_KEY_STAUS_COLOR_GOOD: String = "statusColorGood"
-
 extension Product {
 
     var isExpired: Bool {
@@ -49,19 +45,22 @@ extension Product {
             return .Good
         }
     }
-    
+
     var statusColor: Color {
-//        @AppStorage(APP_STORAGE_KEY_STAUS_COLOR_EXPIRED) var statusColorExpired: Color = .pink
+        @AppStorage(APP_STORAGE_KEY_STATUS_COLOR_EXPIRED) var statusColorStringExpired: String = DEFAULT_STATUS_COLOR_STRING_EXPIRED
+        @AppStorage(APP_STORAGE_KEY_STATUS_COLOR_EXPIRING_SOON) var statusColorStringExpiringSoon: String = DEFAULT_STATUS_COLOR_STRING_EXPIRING_SOON
+        @AppStorage(APP_STORAGE_KEY_STATUS_COLOR_GOOD) var statusColorStringGood: String = DEFAULT_STATUS_COLOR_STRING_GOOD
+
         switch status {
-        case .Expired:
-            return .pink
-        case .ExpiringSoon:
-            return .orange
-        case .Good:
-            return .green
+            case .Expired:
+                return Color.fromString(statusColorStringExpired)
+            case .ExpiringSoon:
+                return Color.fromString(statusColorStringExpiringSoon)
+            case .Good:
+                return Color.fromString(statusColorStringGood)
         }
     }
-    
+
     var relativeExpiryDate: String {
         guard let date = expiryDate else { return "" }
         let formatter = RelativeDateTimeFormatter()

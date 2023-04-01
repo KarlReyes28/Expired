@@ -13,6 +13,7 @@
 		8E951EC7299ABC7E003D9F7C /* ArchivedProductsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E951EC6299ABC7E003D9F7C /* ArchivedProductsView.swift */; };
 		8E951EC9299AC1BC003D9F7C /* ProductsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E951EC8299AC1BC003D9F7C /* ProductsView.swift */; };
 		8EA5970A29D788B400E05EB6 /* StatusColorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA5970929D788B400E05EB6 /* StatusColorView.swift */; };
+		DD2ED89429D7D779002066F9 /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD2ED89329D7D779002066F9 /* ColorExtension.swift */; };
 		DD7A8D6929B842BC001DEE0F /* CategoryEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7A8D6829B842BC001DEE0F /* CategoryEditView.swift */; };
 		DD8740AB29B7F78900A747D1 /* CategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD8740AA29B7F78900A747D1 /* CategoriesView.swift */; };
 		DD9C7F6D29837A1F00E672B2 /* ExpiredApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD9C7F6C29837A1F00E672B2 /* ExpiredApp.swift */; };
@@ -39,6 +40,7 @@
 		8E951EC6299ABC7E003D9F7C /* ArchivedProductsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedProductsView.swift; sourceTree = "<group>"; };
 		8E951EC8299AC1BC003D9F7C /* ProductsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsView.swift; sourceTree = "<group>"; };
 		8EA5970929D788B400E05EB6 /* StatusColorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusColorView.swift; sourceTree = "<group>"; };
+		DD2ED89329D7D779002066F9 /* ColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		DD7A8D6829B842BC001DEE0F /* CategoryEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryEditView.swift; sourceTree = "<group>"; };
 		DD8740AA29B7F78900A747D1 /* CategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesView.swift; sourceTree = "<group>"; };
 		DD9C7F6929837A1F00E672B2 /* Expired.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Expired.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -119,9 +121,9 @@
 				DD8740AA29B7F78900A747D1 /* CategoriesView.swift */,
 				DD7A8D6829B842BC001DEE0F /* CategoryEditView.swift */,
 				66B2F07029CB733D008AAF53 /* ExpiringSoonView.swift */,
+				8EA5970929D788B400E05EB6 /* StatusColorView.swift */,
 				DDF6DCF529CBDFFE00C65241 /* ProductImage.swift */,
 				DDCFDCE329C8C97B00FFA36D /* ImagePicker.swift */,
-				8EA5970929D788B400E05EB6 /* StatusColorView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -136,6 +138,7 @@
 				66AF6492298C260F00456759 /* ProductFilter.swift */,
 				DDFED0992999B75800DBBAA6 /* NotificationViewModel.swift */,
 				DDFED09B2999D85A00DBBAA6 /* NotificationCategory.swift */,
+				DD2ED89329D7D779002066F9 /* ColorExtension.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -219,6 +222,7 @@
 				DD9C7F8C29837A9F00E672B2 /* ProductEditView.swift in Sources */,
 				DD9C7F8D29837A9F00E672B2 /* HomeView.swift in Sources */,
 				DDFED09C2999D85A00DBBAA6 /* NotificationCategory.swift in Sources */,
+				DD2ED89429D7D779002066F9 /* ColorExtension.swift in Sources */,
 				DD9C7F8829837A8400E672B2 /* ProductStatus.swift in Sources */,
 				DD9C7F8629837A8400E672B2 /* ProductExtension.swift in Sources */,
 				DDFED09A2999B75900DBBAA6 /* NotificationViewModel.swift in Sources */,
