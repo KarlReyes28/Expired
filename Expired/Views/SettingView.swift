@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+let DEVELOPER_MODE_TRIGGED_TAP_COUNT = 5
+
 struct SettingView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var productStore: ProductStore
@@ -18,6 +20,8 @@ struct SettingView: View {
     @State private var showingDeleteAlert: Bool = false
     @State private var showingDeleteResultAlert: Bool = false
     @State private var deleteSuccess: Bool = false
+    
+    @State private var versionTappedCount: Int = 0
 
     var body: some View {
         NavigationView {
@@ -75,9 +79,23 @@ struct SettingView: View {
                 }
                 Section(header: Text("Version")) {
                     Text("v0.1.0")
+                        .onTapGesture {
+                            versionTappedCount += 1
+                        }
+                }
+                if versionTappedCount >= DEVELOPER_MODE_TRIGGED_TAP_COUNT {
+                    Section(header: Text("Developer Tools")) {
+                        Button("Populate Data") {
+                            PersistenceController.populateData(context: viewContext, productStore: productStore, notificationVM: notificationVM)
+                        }
+                        .foregroundColor(.green)
+                    }
                 }
             }
             .navigationTitle("Settings")
+            .onAppear {
+                versionTappedCount = 0
+            }
         }
     }
 }

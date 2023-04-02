@@ -6,6 +6,7 @@
 //
 
 import CoreData
+import UIKit
 
 struct PersistenceController {
     static let shared = PersistenceController()
@@ -58,5 +59,63 @@ struct PersistenceController {
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
+    }
+
+    static func populateData(context: NSManagedObjectContext, productStore: ProductStore, notificationVM: NotificationViewModel) {
+        notificationVM.cancelNotifications(context)
+        productStore.deleteAll(context)
+
+        let groups = [
+            [
+                "category": "🥬 Vegetable",
+                "items": ["Tomato", "Potato"]
+            ],
+            [
+                "category": "🍓 Fruit",
+                "items": ["Banana", "Apple", "Lemon"]
+            ],
+            [
+                "category": "🍖 Meat",
+                "items": ["Steak"]
+            ],
+            [
+                "category": "🥛 Dairy",
+                "items": ["Milk", "Cheese"]
+            ],
+            [
+                "category": "🍺 Alcohol",
+                "items": ["Beer", "Wine"]
+            ],
+        ]
+
+        let now = Date()
+
+        for index in 0..<groups.count {
+            let group = groups[index]
+            let category = Category(context: context)
+            category.id = UUID()
+            category.title = group["category"] as? String
+            category.createdAt = now
+            category.updatedAt = now
+            productStore.save(context)
+            
+            let items = group["items"] as? [String]
+            for index in 0..<items!.count {
+                let item = items![index]
+                let product = Product(context: context)
+                product.id = UUID()
+                product.title = item
+                product.expiryDate = Date(timeIntervalSinceNow: 86400 * Double.random(in: -3...6))
+                product.memo = Int.random(in: -1...2) > 0 ? "This is the memo of \(item)" : nil
+                product.archived = false
+                product.category = category
+                let image = UIImage(named: item.lowercased())
+                product.image = image?.jpegData(compressionQuality: 1)
+                product.createdAt = now
+                product.updatedAt = now
+                productStore.save(context)
+                notificationVM.updateProductNotifications(context, product: product)
+            }
+        }
     }
 }
